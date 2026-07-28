@@ -287,8 +287,9 @@ if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js').ca
   .daily-card .idiom-example { font-size: 12px; color: var(--muted); font-style: italic; }
 
   /* ===== 底部导航栏 (手机端) ===== */
-  .bottom-nav { display: none; position: fixed; bottom: 0; left: 0; right: 0; background: var(--card); border-top: 1px solid var(--border); z-index: 200; padding: 6px 0 env(safe-area-inset-bottom,6px) 0; justify-content: space-around; box-shadow: 0 -2px 12px rgba(240,160,192,0.1); }
-  .bottom-nav .bn-item { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 4px 6px; border: none; background: none; cursor: pointer; font-size: 10px; font-weight: 600; color: var(--muted); font-family: inherit; transition: color 0.2s; min-width: 48px; }
+  .bottom-nav { display: none; position: fixed; bottom: 0; left: 0; right: 0; background: var(--card); border-top: 1px solid var(--border); z-index: 200; padding: 6px 0 env(safe-area-inset-bottom,6px) 0; justify-content: space-around; box-shadow: 0 -2px 12px rgba(240,160,192,0.1); overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .bottom-nav::-webkit-scrollbar { display: none; }
+  .bottom-nav .bn-item { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 4px 8px; border: none; background: none; cursor: pointer; font-size: 10px; font-weight: 600; color: var(--muted); font-family: inherit; transition: color 0.2s; white-space: nowrap; flex-shrink: 0; }
   .bottom-nav .bn-item.active { color: var(--pink-deep); }
   .bottom-nav .bn-icon { font-size: 20px; line-height: 1; }
 
@@ -2265,6 +2266,12 @@ initDiary();
   </button>
   <button class="bn-item" onclick="switchPanel('ted')" id="bn-ted">
     <span class="bn-icon">🎬</span> TED
+  </button>
+  <button class="bn-item" onclick="switchPanel('recruit')" id="bn-recruit">
+    <span class="bn-icon">💼</span> 秋招
+  </button>
+  <button class="bn-item" onclick="switchPanel('startup')" id="bn-startup">
+    <span class="bn-icon">🚀</span> 创业
   </button>
   <button class="bn-item" onclick="switchPanel('diary')" id="bn-diary">
     <span class="bn-icon">🌻</span> 日记
