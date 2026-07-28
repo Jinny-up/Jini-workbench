@@ -1,0 +1,2133 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+<title>吉尼工作台</title>
+<meta name="description" content="吉尼的个人学习工作台 - 雅思 · 语言表达 · TED · 秋招 · 心情日记">
+<meta name="theme-color" content="#FFF0F5">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="吉尼工作台">
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><rect fill='%23FFF0F5' width='180' height='180' rx='40'/><text x='90' y='115' text-anchor='middle' font-size='80'>🍺</text></svg>">
+<link rel="manifest" href="manifest.json">
+<script>
+if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js').catch(function(){}); }
+</script>
+<style>
+  :root {
+    --bg: #FFF0F5;
+    --card: #ffffff;
+    --text: #4A3040;
+    --muted: #B090A0;
+    --border: #F5D5E5;
+    --pink: #F0A0C0;
+    --pink-light: #FFF0F5;
+    --pink-mid: #F5C8D8;
+    --pink-dark: #C06080;
+    --pink-deep: #904060;
+    --pink-btn: #F0A0C0;
+    --pink-btn-hover: #E888B0;
+    --pink-glow: #FFE0EC;
+    --teal: #80C8B8;
+    --teal-light: #E8F8F4;
+    --teal-dark: #388870;
+    --coral: #F0A898;
+    --coral-light: #FFF0EC;
+    --coral-dark: #A05848;
+    --lavender: #C0A8E0;
+    --lavender-light: #F5F0FF;
+    --lavender-dark: #7058A0;
+    --radius: 14px;
+    --radius-sm: 10px;
+    --shadow: 0 2px 12px rgba(240,160,192,0.15);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: linear-gradient(135deg, #FFF0F5 0%, #FFE8F0 30%, #FFF5F8 60%, #FFE0EC 100%);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+  }
+
+  /* ===== 侧边栏 ===== */
+  .sidebar {
+    width: 210px; min-width: 210px;
+    position: fixed; left: 0; top: 0; bottom: 0;
+    background: var(--card);
+    border-right: 1px solid var(--border);
+    box-shadow: 2px 0 20px rgba(240,160,192,0.12);
+    display: flex; flex-direction: column;
+    padding: 0 0 20px 0;
+    z-index: 100;
+    overflow-y: auto;
+  }
+  .sidebar::-webkit-scrollbar { width: 3px; }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--pink-mid); border-radius: 2px; }
+
+  .sidebar-logo {
+    padding: 28px 20px 20px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 8px;
+  }
+  .sidebar-logo h2 {
+    font-size: 22px; font-weight: 700;
+    background: linear-gradient(135deg, #F080A0, #E06090, #D04880);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .sidebar-logo p { font-size: 11px; color: var(--pink-dark); margin-top: 2px; }
+
+  .nav-section { padding: 8px 0; }
+  .nav-label {
+    font-size: 10px; font-weight: 700; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 1px;
+    padding: 8px 20px 4px;
+  }
+  .nav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 11px 16px; margin: 2px 12px;
+    border-radius: 11px; cursor: pointer;
+    font-size: 13px; font-weight: 600; color: var(--muted);
+    transition: all 0.2s; border: none; background: transparent;
+    text-align: left; width: calc(100% - 24px); font-family: inherit;
+  }
+  .nav-item:hover { background: var(--pink-light); color: var(--pink-dark); }
+  .nav-item.active {
+    background: linear-gradient(135deg, #FFF0F5, #FFE0EC);
+    color: var(--pink-deep);
+    box-shadow: 0 1px 4px rgba(240,160,192,0.2);
+  }
+  .nav-icon { font-size: 18px; width: 26px; text-align: center; flex-shrink: 0; }
+
+  /* 底部用户区 */
+  .sidebar-footer {
+    margin-top: auto;
+    padding: 16px 20px; border-top: 1px solid var(--border);
+    font-size: 12px; color: var(--muted);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .sidebar-footer .avatar {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: linear-gradient(135deg, #F0A0C0, #E888B0);
+    color: #fff; display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 700;
+  }
+
+  /* ===== 主内容区 ===== */
+  .main {
+    margin-left: 210px; flex: 1; padding: 28px 32px;
+    max-width: calc(100vw - 210px); min-height: 100vh;
+  }
+
+  header { margin-bottom: 24px; }
+  header h1 {
+    font-size: 24px; font-weight: 700;
+    color: var(--pink-deep);
+  }
+  header p { font-size: 13px; color: var(--pink-dark); margin-top: 4px; }
+
+  .panel { display: none; animation: fadeIn 0.35s ease; }
+  .panel.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 24px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+  }
+  .card.full { grid-column: 1 / -1; }
+  .card h3 { font-size: 16px; font-weight: 700; color: var(--pink-deep); margin-bottom: 4px; }
+  .card .sub { font-size: 13px; color: var(--muted); margin-bottom: 16px; }
+
+  .btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 10px 20px; border-radius: 25px; border: none;
+    font-size: 13px; font-weight: 600; cursor: pointer;
+    transition: all 0.2s; font-family: inherit;
+  }
+  .btn-pink { background: linear-gradient(135deg, #F0A0C0, #E888B0); color: #fff; box-shadow: 0 2px 8px rgba(240,160,192,0.3); }
+  .btn-pink:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(240,160,192,0.4); }
+  .btn-pink.playing { animation: pulse 1.5s infinite; }
+  .btn-outline { background: transparent; border: 2px solid var(--pink-mid); color: var(--pink-dark); }
+  .btn-outline:hover { background: var(--pink-light); border-color: var(--pink); }
+  .btn-sm { padding: 6px 14px; font-size: 12px; }
+  .btn-lavender { background: linear-gradient(135deg, #C0A8E0, #B090D0); color: #fff; box-shadow: 0 2px 8px rgba(192,168,224,0.3); }
+  .btn-lavender:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(192,168,224,0.4); }
+
+  /* 聊天 */
+  .chat-container { display: flex; flex-direction: column; height: 420px; border-radius: var(--radius-sm); overflow: hidden; border: 1px solid var(--border); }
+  .chat-header { padding: 12px 16px; background: linear-gradient(135deg, #F5C8D8, #F0A0C0); color: #fff; font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+  .chat-header .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #90EE90; animation: pulse 1.5s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+  .chat-messages { flex: 1; overflow-y: auto; padding: 16px; background: #FFFAFD; display: flex; flex-direction: column; gap: 12px; }
+  .chat-messages::-webkit-scrollbar { width: 5px; }
+  .chat-messages::-webkit-scrollbar-thumb { background: var(--pink-mid); border-radius: 3px; }
+  .msg { max-width: 78%; padding: 10px 14px; border-radius: 16px; font-size: 13px; line-height: 1.55; animation: msgIn 0.3s ease; }
+  @keyframes msgIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  .msg.ai { align-self: flex-start; background: var(--pink-light); color: var(--pink-deep); border-bottom-left-radius: 4px; }
+  .msg.user { align-self: flex-end; background: linear-gradient(135deg, #F0A0C0, #E080A8); color: #fff; border-bottom-right-radius: 4px; }
+  .msg.system { align-self: center; background: #FFF5FA; color: var(--muted); font-size: 12px; max-width: 90%; text-align: center; border-radius: 8px; padding: 6px 14px; }
+  .chat-input-area { display: flex; gap: 8px; padding: 12px; background: #fff; border-top: 1px solid var(--border); }
+  .chat-input-area input { flex: 1; padding: 10px 16px; border: 2px solid var(--border); border-radius: 25px; font-size: 13px; outline: none; font-family: inherit; transition: border-color 0.2s; }
+  .chat-input-area input:focus { border-color: var(--pink); }
+  .chat-input-area button { padding: 10px 18px; border-radius: 25px; border: none; background: linear-gradient(135deg, #F0A0C0, #E888B0); color: #fff; font-weight: 600; cursor: pointer; font-size: 13px; }
+
+  .api-config { display: flex; gap: 8px; align-items: center; padding: 10px 14px; background: #FFF5FA; border-radius: var(--radius-sm); margin-bottom: 12px; font-size: 12px; }
+  .api-config input { flex: 1; padding: 6px 12px; border: 1px solid var(--border); border-radius: 20px; font-size: 12px; outline: none; }
+  .api-config input:focus { border-color: var(--pink); }
+  .api-config label { color: var(--pink-dark); font-weight: 600; white-space: nowrap; }
+
+  .material-card { background: linear-gradient(135deg, #FFF0F5, #FFF5FA); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px; margin-top: 10px; position: relative; }
+  .material-card .topic-tag { display: inline-block; padding: 3px 10px; border-radius: 15px; font-size: 11px; font-weight: 600; margin: 3px; background: var(--pink-mid); color: var(--pink-deep); }
+  .material-card .copy-btn { position: absolute; top: 10px; right: 10px; font-size: 11px; padding: 4px 10px; border-radius: 12px; border: 1px solid var(--pink-mid); background: #fff; color: var(--pink-dark); cursor: pointer; }
+
+  .article-card { border-left: 4px solid var(--pink); padding: 12px 16px; background: #FFFAFD; border-radius: 0 var(--radius-sm) var(--radius-sm) 0; margin-bottom: 10px; }
+  .article-card h4 { font-size: 14px; color: var(--pink-deep); margin-bottom: 6px; }
+  .article-card .sentence { padding: 8px 12px; background: #fff; border-radius: 8px; margin: 6px 0; font-size: 13px; border: 1px solid var(--border); font-style: italic; }
+  .article-card .analysis { font-size: 12px; color: var(--pink-dark); margin-top: 4px; padding-left: 4px; }
+  .article-card .task-label { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; margin-right: 6px; }
+  .task1 { background: #FFE8F0; color: #C06080; }
+  .task2 { background: #FFE0EC; color: #904060; }
+
+  .progress-bar { height: 8px; background: var(--pink-light); border-radius: 4px; margin-top: 8px; overflow: hidden; }
+  .progress-fill { height: 100%; border-radius: 4px; transition: width 0.6s ease; background: linear-gradient(90deg, #F0A0C0, #E888B0); }
+
+  .tag { display: inline-block; padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; margin: 3px; border: 1px solid var(--pink-mid); background: var(--pink-light); color: var(--pink-dark); }
+
+  .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid var(--pink-mid); border-top-color: var(--pink); border-radius: 50%; animation: spin 0.6s linear infinite; vertical-align: middle; margin-right: 6px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: var(--pink-deep); color: #fff; padding: 10px 24px; border-radius: 25px; font-size: 13px; font-weight: 600; z-index: 1000; animation: toastIn 0.3s ease, toastOut 0.3s ease 2s forwards; box-shadow: 0 4px 16px rgba(240,160,192,0.4); }
+  @keyframes toastIn { from { opacity:0; transform:translateX(-50%) translateY(-10px) } to { opacity:1; transform:translateX(-50%) translateY(0) } }
+  @keyframes toastOut { from { opacity:1 } to { opacity:0; transform:translateX(-50%) translateY(-10px) } }
+
+  .empty-state { text-align: center; padding: 40px 20px; color: var(--muted); }
+  .empty-state .icon { font-size: 40px; margin-bottom: 10px; }
+
+  /* 收藏 */
+  .collection-toggle { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 20px; border: 1px solid var(--pink-mid); background: #fff; font-size: 12px; font-weight: 600; color: var(--pink-dark); cursor: pointer; transition: all 0.2s; }
+  .collection-toggle:hover { background: var(--pink-light); }
+  .collection-toggle .count { background: var(--pink); color: #fff; padding: 1px 7px; border-radius: 10px; font-size: 11px; }
+  .fav-btn { display: inline-flex; align-items: center; gap: 3px; padding: 3px 10px; border-radius: 12px; border: 1px solid var(--pink-mid); background: #fff; font-size: 11px; color: var(--muted); cursor: pointer; transition: all 0.2s; margin-left: 8px; flex-shrink: 0; }
+  .fav-btn:hover { border-color: var(--pink); color: var(--pink-dark); }
+  .fav-btn.faved { background: var(--pink-light); border-color: var(--pink); color: var(--pink-dark); }
+  .collection-panel { margin-top: 16px; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+  .collection-header { padding: 12px 16px; background: #FFF5FA; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border); }
+  .collection-tab { padding: 5px 14px; border-radius: 15px; border: none; font-size: 12px; font-weight: 600; cursor: pointer; background: transparent; color: var(--muted); transition: all 0.2s; }
+  .collection-tab.active { background: #fff; color: var(--pink-deep); box-shadow: 0 1px 3px rgba(240,160,192,0.15); }
+  .collection-list { padding: 12px; max-height: 320px; overflow-y: auto; }
+  .collection-item { display: flex; align-items: flex-start; gap: 8px; padding: 10px 12px; border-radius: 8px; margin-bottom: 6px; background: #FFFAFD; border: 1px solid var(--border); font-size: 13px; line-height: 1.5; }
+  .collection-item .delete-btn { color: var(--muted); cursor: pointer; font-size: 14px; flex-shrink: 0; margin-top: 1px; background: none; border: none; }
+  .collection-item .delete-btn:hover { color: #C06080; }
+  .collection-item .item-meta { font-size: 11px; color: var(--muted); margin-top: 3px; }
+  .word-input-row { display: flex; gap: 6px; padding: 8px 12px; border-bottom: 1px solid var(--border); background: #FFFAFD; }
+  .word-input-row input { flex: 1; padding: 6px 12px; border: 1px solid var(--border); border-radius: 16px; font-size: 12px; outline: none; }
+  .word-input-row input:focus { border-color: var(--pink); }
+  .word-input-row button { padding: 6px 14px; border-radius: 16px; border: none; background: var(--pink); color: #fff; font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+  .export-bar { display: flex; gap: 8px; padding: 10px 12px; border-top: 1px solid var(--border); background: #fff; }
+  .export-bar button { flex: 1; padding: 8px; border-radius: 8px; border: none; font-size: 12px; font-weight: 600; cursor: pointer; }
+  .export-copy { background: var(--pink-light); color: var(--pink-dark); }
+  .export-download { background: var(--pink); color: #fff; }
+  .export-clear { background: transparent; color: var(--muted); border: 1px solid var(--border) !important; }
+
+  /* 语音 */
+  .mode-toggle { display: inline-flex; background: var(--pink-light); border-radius: 22px; padding: 3px; gap: 2px; }
+  .mode-btn { padding: 7px 18px; border-radius: 20px; border: none; font-size: 12px; font-weight: 600; cursor: pointer; background: transparent; color: var(--muted); transition: all 0.2s; }
+  .mode-btn.active { background: #fff; color: var(--pink-deep); box-shadow: 0 1px 3px rgba(240,160,192,0.2); }
+  .voice-area { display: flex; flex-direction: column; align-items: center; padding: 20px; gap: 14px; background: #FFFAFD; border-top: 1px solid var(--border); }
+  .mic-btn { width: 72px; height: 72px; border-radius: 50%; border: none; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #F0A0C0, #E888B0); box-shadow: 0 4px 20px rgba(240,160,192,0.35); position: relative; }
+  .mic-btn:hover { transform: scale(1.05); }
+  .mic-btn:active { transform: scale(0.95); }
+  .mic-btn.listening { background: linear-gradient(135deg, #E06080, #D04880); animation: micPulse 1.5s infinite; }
+  .mic-btn.listening::after { content: ''; position: absolute; inset: -8px; border-radius: 50%; border: 3px solid rgba(240,160,192,0.4); animation: wave 1.5s infinite; }
+  @keyframes micPulse { 0%,100% { box-shadow: 0 4px 20px rgba(224,96,128,0.35); } 50% { box-shadow: 0 4px 40px rgba(224,96,128,0.6); } }
+  @keyframes wave { 0% { inset: -8px; opacity: 1; } 100% { inset: -24px; opacity: 0; } }
+  .mic-icon { width: 28px; height: 28px; }
+  .voice-status { font-size: 13px; font-weight: 600; color: var(--pink-dark); min-height: 20px; text-align: center; }
+  .voice-hint { font-size: 11px; color: var(--muted); }
+  .interim-text { font-size: 13px; color: var(--pink-dark); font-style: italic; text-align: center; min-height: 22px; padding: 0 16px; max-width: 90%; line-height: 1.5; }
+  .voice-speak-indicator { display: flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 12px; background: var(--pink-light); font-size: 11px; color: var(--pink-dark); font-weight: 600; animation: fadeIn 0.3s ease; }
+  .voice-speak-indicator .wave-bars { display: flex; gap: 2px; align-items: flex-end; height: 14px; }
+  .voice-speak-indicator .wave-bars span { width: 2px; background: var(--pink); border-radius: 1px; animation: barBounce 0.6s ease infinite; }
+  .voice-speak-indicator .wave-bars span:nth-child(1) { height: 6px; animation-delay: 0s; }
+  .voice-speak-indicator .wave-bars span:nth-child(2) { height: 12px; animation-delay: 0.15s; }
+  .voice-speak-indicator .wave-bars span:nth-child(3) { height: 8px; animation-delay: 0.3s; }
+  @keyframes barBounce { 0%,100% { transform: scaleY(0.5); } 50% { transform: scaleY(1); } }
+
+  /* 语言表达 */
+  .article-body { padding: 16px; background: #FFFAFD; border-radius: var(--radius-sm); border: 1px solid var(--border); margin-bottom: 12px; max-height: 380px; overflow-y: auto; font-size: 14px; line-height: 1.9; }
+  .article-body::-webkit-scrollbar { width: 5px; }
+  .article-body::-webkit-scrollbar-thumb { background: var(--pink-mid); border-radius: 3px; }
+  .article-body p { margin-bottom: 10px; text-indent: 2em; }
+  .retell-area { display: flex; flex-direction: column; gap: 10px; }
+  .retell-area textarea { width: 100%; min-height: 140px; padding: 14px; border: 2px solid var(--border); border-radius: var(--radius-sm); font-size: 14px; outline: none; font-family: inherit; resize: vertical; line-height: 1.7; transition: border-color 0.2s; }
+  .retell-area textarea:focus { border-color: var(--lavender); }
+
+  .score-card { background: linear-gradient(135deg, #F5F0FF, #FFF5FA); border-radius: var(--radius-sm); border: 1px solid var(--border); padding: 16px; margin-top: 12px; }
+  .score-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px,1fr)); gap: 10px; margin: 12px 0; }
+  .score-item { text-align: center; padding: 10px; background: #fff; border-radius: 10px; border: 1px solid var(--border); }
+  .score-item .score-num { font-size: 28px; font-weight: 700; color: var(--lavender-dark); }
+  .score-item .score-label { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .score-total { text-align: center; }
+  .score-total .big { font-size: 48px; font-weight: 800; background: linear-gradient(135deg, #C0A8E0, #A080D0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+
+  .daily-card { background: linear-gradient(135deg, #F5F0FF, #FFF5FA); border: 2px solid var(--lavender); border-radius: var(--radius-sm); padding: 18px; position: relative; overflow: hidden; }
+  .daily-card::before { content: ''; position: absolute; top: -20px; right: -20px; width: 80px; height: 80px; border-radius: 50%; background: rgba(192,168,224,0.1); }
+  .daily-card .quote-text { font-size: 15px; font-style: italic; color: var(--lavender-dark); line-height: 1.7; margin: 8px 0; }
+  .daily-card .quote-source { font-size: 12px; color: var(--muted); text-align: right; }
+  .daily-card .idiom-word { font-size: 22px; font-weight: 700; color: var(--lavender-dark); letter-spacing: 4px; }
+  .daily-card .idiom-meaning { font-size: 13px; color: var(--text); margin: 6px 0; }
+  .daily-card .idiom-example { font-size: 12px; color: var(--muted); font-style: italic; }
+
+  @media (max-width: 768px) {
+    .sidebar { width: 60px; min-width: 60px; }
+    .sidebar-logo h2, .sidebar-logo p, .nav-label, .nav-item span:not(.nav-icon), .sidebar-footer { display: none; }
+    .sidebar-logo { padding: 16px 8px; margin-bottom: 0; }
+    .nav-item { padding: 12px; margin: 2px 8px; justify-content: center; width: auto; }
+    .main { margin-left: 60px; padding: 16px; max-width: calc(100vw - 60px); }
+    .cards { grid-template-columns: 1fr; }
+    .chat-container { height: 350px; }
+  }
+
+  /* ===== 学习档案 ===== */
+  .archive-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.35); z-index: 1000; display: flex; align-items: center; justify-content: center; animation: fadeIn 0.2s; }
+  .archive-overlay.hidden { display: none; }
+  .archive-modal { background: var(--card); border-radius: var(--radius); width: 700px; max-width: 90vw; max-height: 80vh; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 8px 40px rgba(0,0,0,0.15); }
+  .archive-header { padding: 20px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+  .archive-header h2 { font-size: 18px; }
+  .archive-close { width: 32px; height: 32px; border-radius: 50%; border: none; background: var(--pink-light); color: var(--pink-dark); cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; }
+  .archive-filters { padding: 12px 24px; border-bottom: 1px solid var(--border); display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .archive-filter { padding: 4px 12px; border-radius: 15px; border: 1px solid var(--border); background: transparent; font-size: 12px; cursor: pointer; font-family: inherit; color: var(--muted); transition: all 0.2s; }
+  .archive-filter.active { background: var(--pink-light); border-color: var(--pink); color: var(--pink-dark); font-weight: 600; }
+  .archive-body { flex: 1; overflow-y: auto; padding: 16px 24px; }
+  .archive-item { padding: 14px 16px; border-radius: var(--radius-sm); border: 1px solid var(--border); margin-bottom: 10px; transition: all 0.2s; }
+  .archive-item:hover { box-shadow: var(--shadow); border-color: var(--pink-mid); }
+  .archive-item .meta { display: flex; gap: 8px; align-items: center; margin-bottom: 6px; flex-wrap: wrap; }
+  .archive-item .tag { font-size: 10px; padding: 2px 8px; border-radius: 10px; }
+  .archive-item .tag-ielts { background: var(--pink-light); color: var(--pink-dark); }
+  .archive-item .tag-expression { background: var(--lavender-light); color: var(--lavender-dark); }
+  .archive-item .tag-ted { background: var(--teal-light); color: var(--teal-dark); }
+  .archive-item .tag-writing { background: #FFF0EC; color: var(--coral-dark); }
+  .archive-item .date { font-size: 11px; color: var(--muted); }
+  .archive-item .title { font-size: 14px; font-weight: 600; color: var(--text); }
+  .archive-item .preview { font-size: 12px; color: var(--muted); margin-top: 4px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .archive-item .score-badge { display: inline-block; background: var(--teal-light); color: var(--teal-dark); padding: 1px 8px; border-radius: 10px; font-size: 12px; font-weight: 600; }
+  .archive-item .expand-btn { font-size: 11px; color: var(--pink-dark); cursor: pointer; background: none; border: none; font-family: inherit; padding: 2px 0; margin-top: 4px; display: inline-block; }
+  .archive-item .detail-section { margin-top: 10px; padding: 10px 12px; border-radius: 10px; font-size: 12px; line-height: 1.7; display: none; }
+  .archive-item .detail-section.user-output { background: #FFF5FA; border-left: 3px solid var(--pink); }
+  .archive-item .detail-section.ai-refinement { background: #F5F0FF; border-left: 3px solid var(--lavender); }
+  .archive-item .detail-section.expanded { display: block; }
+  .archive-item .detail-label { font-size: 11px; font-weight: 700; margin-bottom: 6px; display: flex; align-items: center; gap: 4px; }
+  .archive-item .detail-label.mine { color: var(--pink-dark); }
+  .archive-item .detail-label.ai { color: var(--lavender-dark); }
+  .archive-item .detail-text { white-space: pre-wrap; color: var(--text); }
+
+  /* ===== 心情日记 ===== */
+  :root {
+    --warm: #FFB088; --warm-dark: #E08060; --warm-light: #FFF3ED;
+    --sun: #FFD580; --sun-dark: #F0A030;
+  }
+  .nav-item .nav-icon.warm { color: var(--warm); }
+  .btn-warm { background: linear-gradient(135deg, #FFB088, #FFA070); color: #fff; border: none; box-shadow: 0 2px 8px rgba(255,176,136,0.3); }
+  .btn-warm:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(255,176,136,0.4); }
+  .btn-warm-fill { background: linear-gradient(135deg, #FFD580, #FFC060); color: #8B6914; border: none; font-weight: 700; box-shadow: 0 2px 8px rgba(255,213,128,0.3); }
+  .diary-date-header { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; padding: 14px 18px; background: linear-gradient(135deg, #FFF8F0, #FFF0E5); border-radius: var(--radius-sm); border: 1px solid #FFD580; }
+  .diary-date-header .date-display { font-size: 20px; font-weight: 700; color: var(--warm-dark); }
+  .diary-date-header .weekday { font-size: 13px; color: var(--sun-dark); }
+  .diary-date-header .motto { font-size: 11px; color: var(--warm); font-style: italic; margin-left: auto; text-align: right; }
+  .diary-form-card { background: #fff; border-radius: var(--radius-sm); border: 2px dashed var(--warm); padding: 18px; margin-bottom: 16px; }
+  .diary-form-card .prompt { font-size: 14px; font-weight: 600; color: var(--warm-dark); margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+  .diary-entry { display: flex; gap: 10px; margin-bottom: 8px; align-items: flex-start; }
+  .diary-entry .emoji-badge { font-size: 24px; width: 36px; text-align: center; flex-shrink: 0; }
+  .diary-entry textarea { flex: 1; padding: 10px 14px; border: 1px solid #FFD5B8; border-radius: 15px; font-size: 13px; outline: none; font-family: inherit; resize: vertical; min-height: 40px; background: #FFFBF8; }
+  .diary-entry textarea:focus { border-color: var(--warm); box-shadow: 0 0 0 3px rgba(255,176,136,0.15); }
+  .diary-entries-list { margin-top: 16px; }
+  .diary-entries-list h4 { font-size: 14px; color: var(--warm-dark); margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+  .diary-today-item { padding: 12px 14px; border-radius: 12px; margin-bottom: 8px; font-size: 13px; line-height: 1.7; display: flex; gap: 10px; align-items: flex-start; }
+  .diary-today-item.happy { background: linear-gradient(135deg, #FFF8F0, #FFF0E0); border: 1px solid #FFE0C0; }
+  .diary-today-item.grateful { background: linear-gradient(135deg, #FFF5FA, #FFE8F0); border: 1px solid #FFD0E0; }
+  .diary-today-item .item-emoji { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+  .diary-history-section { margin-top: 20px; padding-top: 16px; border-top: 2px solid var(--warm-light); }
+  .diary-history-section h4 { font-size: 14px; color: var(--warm); margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+  .diary-history-item { padding: 12px 14px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 8px; background: #fff; cursor: pointer; transition: all 0.2s; }
+  .diary-history-item:hover { border-color: var(--warm); box-shadow: 0 2px 8px rgba(255,176,136,0.15); }
+  .diary-history-item .h-date { font-size: 12px; color: var(--warm-dark); font-weight: 600; margin-bottom: 4px; }
+  .diary-history-item .h-summary { font-size: 12px; color: var(--muted); }
+  .diary-history-item .h-detail { display: none; margin-top: 8px; font-size: 12px; line-height: 1.7; }
+  .diary-history-item .h-detail.expanded { display: block; }
+  .diary-empty { text-align: center; padding: 30px; color: var(--muted); }
+  .diary-empty .icon { font-size: 48px; margin-bottom: 10px; }
+  .diary-streak { display: inline-flex; align-items: center; gap: 4px; background: linear-gradient(135deg, #FFD580, #FFC060); color: #8B6914; padding: 4px 12px; border-radius: 15px; font-size: 12px; font-weight: 700; }
+  .diary-action-row { display: flex; gap: 8px; margin-top: 12px; }
+  .archive-actions { padding: 12px 24px; border-top: 1px solid var(--border); display: flex; gap: 8px; }
+  .archive-empty { text-align: center; padding: 40px; color: var(--muted); }
+  .archive-empty .icon { font-size: 48px; margin-bottom: 10px; }
+</style>
+</head>
+<body>
+
+<!-- ===== 侧边栏 ===== -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <h2>吉尼工作台</h2>
+    <p>粉粉嫩嫩，干劲满满</p>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-label">学习备考</div>
+    <button class="nav-item active" onclick="switchPanel('ielts')" id="nav-ielts">
+      <span class="nav-icon">📚</span> 雅思
+    </button>
+    <button class="nav-item" onclick="switchPanel('expression')" id="nav-expression">
+      <span class="nav-icon">🗣️</span> 语言表达
+    </button>
+    <button class="nav-item" onclick="switchPanel('ted')" id="nav-ted">
+      <span class="nav-icon">🎬</span> TED 学习
+    </button>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-label">求职创业</div>
+    <button class="nav-item" onclick="switchPanel('recruit')" id="nav-recruit">
+      <span class="nav-icon">🎯</span> 秋招
+    </button>
+    <button class="nav-item" onclick="switchPanel('startup')" id="nav-startup">
+      <span class="nav-icon">🚀</span> 创业·四六级
+    </button>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-label">生活</div>
+    <button class="nav-item" onclick="switchPanel('diary')" id="nav-diary">
+      <span class="nav-icon">🌻</span> 心情日记
+    </button>
+  </div>
+
+  <div style="padding:8px 16px;">
+    <button class="nav-item" onclick="openArchive()" style="width:100%;justify-content:flex-start;">
+      <span class="nav-icon">📁</span> 学习档案
+    </button>
+  </div>
+
+  <div class="sidebar-footer">
+    <div class="avatar">吉</div>
+    <span>吉尼 · 在线</span>
+  </div>
+</aside>
+
+<!-- ===== 主内容区 ===== -->
+<main class="main">
+
+<!-- ============ 雅思面板 ============ -->
+<div id="panel-ielts" class="panel active">
+  <header>
+    <h1>雅思备考</h1>
+    <p>AI 口语搭子 · 每日外刊 · 话题素材库</p>
+  </header>
+
+  <div class="cards">
+    <!-- 口语 -->
+    <div class="card full">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+        <div>
+          <h3>口语 · AI 口语搭子 (DeepSeek)</h3>
+          <p class="sub">文本聊天 or 语音通话，跟 Luna 实时练习口语</p>
+        </div>
+        <div class="mode-toggle">
+          <button class="mode-btn active" onclick="switchMode('text')">文本</button>
+          <button class="mode-btn" onclick="switchMode('voice')">语音通话</button>
+        </div>
+      </div>
+      <div class="api-config">
+        <label>DeepSeek API Key</label>
+        <input type="password" id="apiKey" placeholder="sk-..." onchange="saveApiKey()">
+        <span id="apiStatus" style="font-size:11px;color:var(--muted);white-space:nowrap">未配置</span>
+        <button class="btn btn-sm btn-pink" onclick="testApiKey()" style="white-space:nowrap">测试连接</button>
+      </div>
+      <div class="chat-container">
+        <div class="chat-header"><span class="status-dot" id="statusDot"></span><span id="chatHeaderTitle">雅思口语老师 Luna (DeepSeek-V3)</span></div>
+        <div class="chat-messages" id="chatMessages">
+          <div class="msg ai">Hey! I'm Luna, your IELTS speaking coach. Let's practice together! Tell me about yourself — what do you do? What are your hobbies?</div>
+        </div>
+        <div class="chat-input-area" id="textInputArea">
+          <input type="text" id="chatInput" placeholder="用英文聊聊你的生活、经历、想法..." onkeydown="if(event.key==='Enter')sendMessage()">
+          <button onclick="sendMessage()">发送</button>
+        </div>
+        <div class="voice-area" id="voiceInputArea" style="display:none;">
+          <div class="interim-text" id="interimText"></div>
+          <button class="mic-btn" id="micBtn" onclick="toggleMic()">
+            <svg class="mic-icon" viewBox="0 0 24 24" fill="white"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
+          </button>
+          <div class="voice-status" id="voiceStatus">点击麦克风开始说话</div>
+          <div class="voice-hint">说完后自动识别并发送给 Luna</div>
+        </div>
+      </div>
+      <div style="margin-top:12px;display:flex;gap:8px;">
+        <button class="btn btn-pink" onclick="generateMaterial()">根据对话生成多话题素材</button>
+        <button class="btn btn-outline" onclick="clearChat()">清空对话</button>
+      </div>
+      <div id="materialArea"></div>
+    </div>
+
+    <!-- 写作 -->
+    <div class="card full">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+        <div><h3>写作 · 每日外刊精析</h3><p class="sub">每天一篇外刊，提取高分句型，帮你完成 Task 1 和 Task 2 作文</p></div>
+        <button class="collection-toggle" onclick="toggleCollection()">收藏夹 <span class="count" id="collectionCount">0</span></button>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:14px;">
+        <select id="topicSelect" style="padding:8px 14px;border:2px solid var(--border);border-radius:25px;font-size:13px;outline:none;font-family:inherit;">
+          <option value="">不限主题</option>
+          <option value="technology">科技</option><option value="environment">环境</option><option value="education">教育</option>
+          <option value="health">健康</option><option value="society">社会</option><option value="economy">经济</option><option value="culture">文化</option>
+        </select>
+        <button class="btn btn-pink" id="searchArticleBtn" onclick="searchArticle()">检索今日外刊</button>
+        <span class="tag" style="font-size:11px">The Economist / The Guardian / BBC / Nature</span>
+      </div>
+      <div id="articleArea">
+        <div class="empty-state"><div class="icon">📰</div><p style="font-size:14px;font-weight:600;color:var(--pink-dark);margin-bottom:4px;">今天的外刊还没读呢</p><p style="font-size:12px;">点击上方按钮，我给你找一篇高质量外刊</p></div>
+      </div>
+      <div id="writingTaskArea" style="display:none;margin-top:16px;">
+        <div style="display:flex;gap:8px;margin-bottom:10px;">
+          <button class="btn btn-pink btn-sm" onclick="generateTask1()">生成 Task 1 范文</button>
+          <button class="btn btn-outline btn-sm" onclick="generateTask2()">生成 Task 2 范文</button>
+        </div>
+        <div id="taskResult"></div>
+      </div>
+      <!-- 收藏面板 -->
+      <div class="collection-panel" id="collectionPanel" style="display:none;">
+        <div class="collection-header">
+          <button class="collection-tab active" onclick="switchCollectionTab('sentence')">句子收藏 <span style="font-size:10px;color:var(--muted);margin-left:2px;" id="sentenceTabCount">0</span></button>
+          <button class="collection-tab" onclick="switchCollectionTab('word')">单词收藏 <span style="font-size:10px;color:var(--muted);margin-left:2px;" id="wordTabCount">0</span></button>
+        </div>
+        <div id="collectionSentenceTab"><div class="collection-list" id="sentenceList"><div class="empty-state" style="padding:24px;"><p style="font-size:12px;">还没有收藏句子</p></div></div></div>
+        <div id="collectionWordTab" style="display:none;">
+          <div class="word-input-row"><input type="text" id="wordEn" placeholder="英文单词" onkeydown="if(event.key==='Enter')addWord()"><input type="text" id="wordZh" placeholder="中文" onkeydown="if(event.key==='Enter')addWord()" style="max-width:100px;"><button onclick="addWord()">添加</button></div>
+          <div class="collection-list" id="wordList"><div class="empty-state" style="padding:24px;"><p style="font-size:12px;">还没有收藏单词</p></div></div>
+        </div>
+        <div class="export-bar">
+          <button class="export-copy" onclick="exportCollection('copy')">复制全部</button>
+          <button class="export-download" onclick="exportCollection('download')">下载 TXT</button>
+          <button class="export-clear" onclick="clearCollection()">清空收藏</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 语言表达面板 ============ -->
+<div id="panel-expression" class="panel">
+  <header>
+    <h1>语言表达训练</h1>
+    <p>阅读 · 复述 · 评估 · 每日积累</p>
+  </header>
+
+  <div class="cards">
+    <!-- 文章阅读（自动推送） -->
+    <div class="card full">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+        <div>
+          <h3>文章阅读</h3>
+          <p class="sub">系统自动为你推送精选文章，读完后尝试复述</p>
+        </div>
+        <button class="btn btn-lavender btn-sm" id="refreshExpressionBtn" onclick="refreshExpressionArticle()">
+          🔄 刷新文章
+        </button>
+      </div>
+      <div id="expressionArticleArea">
+        <div class="empty-state"><div class="icon">📖</div><p style="font-size:14px;font-weight:600;color:var(--lavender-dark);margin-bottom:4px;">正在为你加载文章...</p><p style="font-size:12px;"><span class="spinner"></span> AI 正在精选一篇优质文章</p></div>
+      </div>
+    </div>
+
+    <!-- 复述区域 -->
+    <div class="card full" id="retellCard" style="display:none;">
+      <h3>复述练习</h3>
+      <p class="sub">读完文章后，用自己的话复述一遍。可以打字或录音</p>
+      <div class="retell-area">
+        <div style="display:flex;gap:8px;align-items:center;margin-bottom:6px;">
+          <button class="btn btn-sm btn-lavender" id="retellRecordBtn" onclick="toggleRetellRecognition()">
+            🎤 语音复述
+          </button>
+          <span style="font-size:12px;color:var(--muted);">或直接在下方输入</span>
+        </div>
+        <div class="interim-text" id="retellInterimText" style="display:none;color:var(--lavender-dark);"></div>
+        <textarea id="retellInput" placeholder="用自己的话把刚才读的文章复述一遍...&#10;&#10;Tips：不需要逐字背诵，重点是理解后的重新表达。可以加上自己的理解和看法。"></textarea>
+        <button class="btn btn-lavender" onclick="evaluateRetelling()" style="width:100%;justify-content:center;">
+          提交评估
+        </button>
+      </div>
+      <div id="retellResult"></div>
+    </div>
+
+    <!-- 每日积累 -->
+    <div class="card">
+      <h3>每日名言</h3>
+      <p class="sub" id="quoteDate">今日积累</p>
+      <div class="daily-card" id="dailyQuote">
+        <div style="text-align:center;padding:10px;">
+          <span class="spinner"></span> 加载中...
+        </div>
+      </div>
+      <button class="btn btn-sm btn-outline" onclick="refreshDailyQuote()" style="margin-top:8px;width:100%;justify-content:center;">刷新名言</button>
+    </div>
+
+    <div class="card">
+      <h3>每日成语</h3>
+      <p class="sub">每天一个四字成语，厚积薄发</p>
+      <div class="daily-card" id="dailyIdiom">
+        <div style="text-align:center;padding:10px;">
+          <span class="spinner"></span> 加载中...
+        </div>
+      </div>
+      <button class="btn btn-sm btn-outline" onclick="refreshDailyIdiom()" style="margin-top:8px;width:100%;justify-content:center;">换一个成语</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ TED 学习面板 ============ -->
+<div id="panel-ted" class="panel">
+  <header>
+    <h1>TED 学习</h1>
+    <p>精选 TED 演讲 · 中英对照学习 · 观点复述练习</p>
+  </header>
+
+  <div class="cards">
+    <!-- TED 视频区 -->
+    <div class="card full">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+        <div>
+          <h3 id="tedTitle">今日 TED 推荐</h3>
+          <p class="sub" id="tedSpeaker">正在加载演讲...</p>
+        </div>
+        <button class="btn btn-pink btn-sm" id="tedRefreshBtn" onclick="refreshTED()">
+          🔄 换一个演讲
+        </button>
+      </div>
+      <div id="tedAudioArea" style="border-radius:var(--radius-sm);background:linear-gradient(135deg,#2d1b2e,#3d2a3e,#1a1a2e);padding:24px;margin-bottom:14px;text-align:center;color:#fff;">
+        <div style="display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:10px;">
+          <div style="font-size:36px;">🎧</div>
+          <div>
+            <div style="font-size:15px;font-weight:700;" id="tedAudioTitle">TED 演讲</div>
+            <div style="font-size:12px;opacity:0.6;" id="tedAudioSpeaker">点击播放收听演讲精华</div>
+          </div>
+        </div>
+        <button id="tedAudioBtn" class="btn btn-pink btn-sm" onclick="playTedAudio()" style="padding:10px 28px;font-size:14px;">
+          ▶ 播放音频摘要
+        </button>
+        <span style="display:inline-block;margin-left:8px;font-size:11px;opacity:0.5;" id="tedAudioStatus"></span>
+        <a id="tedWatchLink" href="#" target="_blank" rel="noopener" style="display:block;margin-top:10px;font-size:11px;color:rgba(255,255,255,0.4);text-decoration:underline;">在 TED.com 查看原文</a>
+      </div>
+      <div id="tedContent"></div>
+    </div>
+
+    <!-- 学习笔记区 -->
+    <div class="card full" id="tedNotesCard" style="display:none;">
+      <h3>学习笔记</h3>
+      <p class="sub">看完演讲后的关键表达与观点总结</p>
+      <div id="tedNotes"></div>
+    </div>
+
+    <!-- 观后复述 -->
+    <div class="card full" id="tedRetellCard" style="display:none;">
+      <h3>观后复述</h3>
+      <p class="sub">用自己的话总结或复述这个 TED 演讲的核心观点</p>
+      <div class="retell-area">
+        <textarea id="tedRetellInput" placeholder="看完演讲后，用中文或英文写出你的理解和看法...&#10;&#10;可以从这几个角度：&#10;1. 演讲的核心观点是什么？&#10;2. 你最有感触的一点是什么？&#10;3. 你学到了哪些表达方式？"></textarea>
+        <button class="btn btn-pink" onclick="evaluateTedRetell()" style="width:100%;justify-content:center;">
+          提交评估
+        </button>
+      </div>
+      <div id="tedRetellResult"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 秋招面板 ============ -->
+<div id="panel-recruit" class="panel">
+  <header>
+    <h1>2026 秋招追踪</h1>
+    <p>网申时间线 · JD 匹配 · STAR 简历优化</p>
+  </header>
+  <div class="cards">
+    <div class="card full">
+      <h3>目标公司追踪</h3>
+      <p class="sub">实时搜索各公司网申时间、JD</p>
+      <div style="display:flex;gap:8px;margin-bottom:12px;">
+        <input type="text" id="companyInput" placeholder="输入目标公司或行业，如「互联网产品岗」「快消管培」" style="flex:1;padding:10px 16px;border:2px solid var(--border);border-radius:25px;font-size:13px;outline:none;font-family:inherit;">
+        <button class="btn btn-pink" style="background:linear-gradient(135deg,#80C8B8,#60B0A0)" onclick="searchCampus()">搜索校招信息</button>
+      </div>
+      <div id="campusResult">
+        <div class="empty-state"><div class="icon">🎯</div><p style="font-size:14px;font-weight:600;color:var(--teal-dark);margin-bottom:4px;">输入目标，我来帮你搜</p><p style="font-size:12px;">实时搜索 2026 秋招网申信息</p></div>
+      </div>
+    </div>
+    <div class="card full">
+      <h3>简历优化</h3>
+      <p class="sub">上传简历 + 目标 JD，STAR 法则精准重写</p>
+      <div style="display:flex;gap:8px;">
+        <textarea id="resumeInput" placeholder="粘贴你的简历内容..." style="flex:1;min-height:100px;padding:12px;border:2px solid var(--border);border-radius:var(--radius-sm);font-size:13px;outline:none;font-family:inherit;resize:vertical;"></textarea>
+        <textarea id="jdInput" placeholder="粘贴目标 JD..." style="flex:1;min-height:100px;padding:12px;border:2px solid var(--border);border-radius:var(--radius-sm);font-size:13px;outline:none;font-family:inherit;resize:vertical;"></textarea>
+      </div>
+      <button class="btn btn-pink" style="background:linear-gradient(135deg,#80C8B8,#60B0A0);margin-top:10px;" onclick="optimizeResume()">STAR 优化简历</button>
+      <div id="resumeResult" style="margin-top:12px;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 创业面板 ============ -->
+<div id="panel-startup" class="panel">
+  <header>
+    <h1>四六级创业</h1>
+    <p>听力 · 阅读 · 写作 · 翻译 — Web MVP 到小程序</p>
+  </header>
+  <div class="cards">
+    <div class="card full">
+      <h3>四六级通关软件 · 产品蓝图</h3>
+      <p class="sub">Web MVP → 小程序，覆盖四大模块</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div style="padding:14px;background:var(--pink-light);border-radius:var(--radius-sm);"><strong style="color:var(--pink-deep);font-size:14px;">听力训练</strong><p style="font-size:12px;color:var(--muted);margin-top:4px;">真题音频 + 逐句精听 + 听写模式</p></div>
+        <div style="padding:14px;background:var(--pink-light);border-radius:var(--radius-sm);"><strong style="color:var(--pink-deep);font-size:14px;">阅读理解</strong><p style="font-size:12px;color:var(--muted);margin-top:4px;">真题 + 生词标注 + 长难句解析</p></div>
+        <div style="padding:14px;background:var(--pink-light);border-radius:var(--radius-sm);"><strong style="color:var(--pink-deep);font-size:14px;">写作批改</strong><p style="font-size:12px;color:var(--muted);margin-top:4px;">AI 批改 + 范文对比 + 替换词</p></div>
+        <div style="padding:14px;background:var(--pink-light);border-radius:var(--radius-sm);"><strong style="color:var(--pink-deep);font-size:14px;">翻译练习</strong><p style="font-size:12px;color:var(--muted);margin-top:4px;">逐句翻译 + 参考答案 + 纠错</p></div>
+      </div>
+      <div style="margin-top:16px;display:flex;gap:8px;">
+        <button class="btn btn-pink" style="background:linear-gradient(135deg,#F0A898,#E08878)">搭建 MVP 原型</button>
+        <button class="btn btn-outline" style="border-color:#F0A898;color:#A05848;">查看技术方案</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 心情日记面板 ============ -->
+<div id="panel-diary" class="panel">
+  <header>
+    <h1>🌻 每日心情日记</h1>
+    <p>记录幸福 · 发现美好 · 心怀感恩</p>
+  </header>
+
+  <div class="cards">
+    <!-- 日期 + 心情 -->
+    <div class="card">
+      <div class="diary-date-header">
+        <div>
+          <div class="date-display" id="diaryDate"></div>
+          <div class="weekday" id="diaryWeekday"></div>
+        </div>
+        <div class="motto" id="diaryMotto">生活明朗，万物可爱</div>
+        <span class="diary-streak" id="diaryStreak">🔥 连续 0 天</span>
+      </div>
+
+      <div class="diary-form-card" id="diaryForm">
+        <div class="prompt">✨ 今天有什么让你开心、幸福、感恩的事？</div>
+
+        <div class="diary-entry">
+          <div class="emoji-badge" title="开心的事">😊</div>
+          <textarea id="diaryHappy" placeholder="今天发生了一件让我特别开心的事…例如：阳光很好，喝到了一杯超棒的咖啡☕" rows="1"></textarea>
+        </div>
+        <div class="diary-entry">
+          <div class="emoji-badge" title="幸福的事">💕</div>
+          <textarea id="diaryLove" placeholder="今天感到被爱/幸福的一个瞬间…例如：朋友突然发来问候，心里暖暖的" rows="1"></textarea>
+        </div>
+        <div class="diary-entry">
+          <div class="emoji-badge" title="感恩的事">🙏</div>
+          <textarea id="diaryGrateful" placeholder="今天想要感谢的人或事…例如：感谢妈妈做了一桌好菜🍲" rows="1"></textarea>
+        </div>
+
+        <div class="diary-action-row">
+          <button class="btn btn-warm-fill" onclick="saveDiary()">💾 保存今天的心情</button>
+          <button class="btn btn-outline btn-sm" onclick="loadDiary()">📋 查看历史</button>
+        </div>
+      </div>
+
+      <!-- 今天已记录的内容 -->
+      <div class="diary-entries-list" id="diaryTodayEntries">
+        <h4>📝 今天已记录 <span style="font-size:11px;color:var(--muted);font-weight:400;" id="diaryTodayCount"></span></h4>
+        <div id="diaryTodayContent"></div>
+      </div>
+
+      <!-- 历史记录 -->
+      <div class="diary-history-section" id="diaryHistorySection" style="display:none;">
+        <h4>📅 往期日记 <button class="btn btn-outline btn-sm" style="margin-left:auto;font-size:10px;" onclick="hideHistory()">收起</button></h4>
+        <div id="diaryHistoryContent"></div>
+      </div>
+    </div>
+
+    <!-- 每日启发卡片 -->
+    <div class="card" style="align-self:flex-start;">
+      <h3 style="color:var(--warm-dark);">🌸 每日正能量</h3>
+      <p class="sub">给你一天的好心情</p>
+      <div id="diaryInspireArea" style="margin-top:12px;">
+        <div class="empty-state">
+          <div class="icon">🌸</div>
+          <p style="font-size:13px;font-weight:600;color:var(--warm-dark);">记录的美好会加倍</p>
+          <p style="font-size:11px;">心理学研究表明，写下三件好事能显著提升幸福感</p>
+        </div>
+      </div>
+      <div style="margin-top:12px;">
+        <button class="btn btn-warm btn-sm" onclick="generateDiaryInspire()" style="width:100%;">💡 给我一些正能量</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<script>
+// ============ 面板切换 ============
+function switchPanel(name) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const panel = document.getElementById('panel-' + name);
+  if (panel) panel.classList.add('active');
+  const nav = document.getElementById('nav-' + name);
+  if (nav) nav.classList.add('active');
+  // 切换到语言表达时自动推送文章
+  if (name === 'expression' && !expressionArticleLoaded && apiKey) { autoPushArticle(); }
+  // 切换到 TED 时自动加载
+  if (name === 'ted' && !tedLoaded && apiKey) { loadTED(); }
+  // 切换到日记时刷新
+  if (name === 'diary') { initDiary(); }
+}
+
+// ============ DeepSeek API ============
+let apiKey = localStorage.getItem('ds_api_key') || '';
+if (apiKey) {
+  document.getElementById('apiKey').value = apiKey;
+  document.getElementById('apiStatus').textContent = '已配置';
+  document.getElementById('apiStatus').style.color = '#80C8B8';
+  document.getElementById('statusDot').style.background = '#90EE90';
+}
+
+function saveApiKey() {
+  apiKey = document.getElementById('apiKey').value.trim();
+  if (apiKey) {
+    localStorage.setItem('ds_api_key', apiKey);
+    document.getElementById('apiStatus').textContent = '已配置';
+    document.getElementById('apiStatus').style.color = '#80C8B8';
+    document.getElementById('statusDot').style.background = '#90EE90';
+    showToast('API Key 已保存');
+  }
+}
+
+async function testApiKey() {
+  const key = document.getElementById('apiKey').value.trim();
+  if (!key) { showToast('请先输入 API Key'); return; }
+  const btn = event.target; btn.disabled = true; btn.textContent = '测试中...';
+  try {
+    const resp = await fetch('https://api.deepseek.com/chat/completions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${key}` },
+      body: JSON.stringify({ model: 'deepseek-chat', messages: [{ role: 'user', content: 'Say "connected" in one word.' }], max_tokens: 10 })
+    });
+    if (resp.ok) { showToast('DeepSeek 连接成功！'); saveApiKey(); }
+    else { const err = await resp.json(); showToast('连接失败: ' + (err.error?.message || resp.status)); }
+  } catch(e) { showToast('网络错误: ' + e.message); }
+  btn.disabled = false; btn.textContent = '测试连接';
+}
+
+async function callDeepSeek(messages, maxTokens = 500, temp = 0.7) {
+  const resp = await fetch('https://api.deepseek.com/chat/completions', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
+    body: JSON.stringify({ model: 'deepseek-chat', messages, max_tokens: maxTokens, temperature: temp })
+  });
+  if (!resp.ok) { const err = await resp.json(); throw new Error(err.error?.message || 'API error'); }
+  const data = await resp.json();
+  return data.choices[0].message.content;
+}
+
+// ============ 雅思口语聊天 ============
+const SYSTEM_PROMPT = `You are Luna, a warm and encouraging IELTS speaking coach. Your role:
+1. Chat naturally with the student in English about their life, hobbies, experiences, and opinions.
+2. Ask follow-up questions to draw out more details and stories.
+3. Gently correct grammar or vocabulary when needed, in a friendly way.
+4. Keep the conversation flowing like a real IELTS Part 1/Part 2 interview.
+5. Occasionally note which IELTS topics their story could apply to.
+6. Be concise - keep responses under 4 sentences unless asked for detailed feedback.
+Always respond in English.`;
+
+let chatHistory = [{ role: 'system', content: SYSTEM_PROMPT }];
+
+async function sendMessage() {
+  const input = document.getElementById('chatInput');
+  const msg = input.value.trim();
+  if (!msg) return;
+  if (!apiKey) { showToast('请先配置 DeepSeek API Key'); return; }
+  addMessage('user', msg); input.value = ''; input.disabled = true;
+  chatHistory.push({ role: 'user', content: msg });
+  const loadingMsg = addMessage('system', '<span class="spinner"></span> Luna 正在思考...'); scrollChat();
+  try {
+    const reply = await callDeepSeek(chatHistory, 500, 0.7);
+    loadingMsg.remove(); chatHistory.push({ role: 'assistant', content: reply }); addMessage('ai', reply);
+  } catch(e) { loadingMsg.remove(); addMessage('system', '出错了: ' + e.message); }
+  input.disabled = false; input.focus(); scrollChat();
+}
+
+function addMessage(type, content) {
+  const container = document.getElementById('chatMessages');
+  const div = document.createElement('div'); div.className = 'msg ' + type;
+  div.innerHTML = content.replace(/\n/g, '<br>'); container.appendChild(div); return div;
+}
+function scrollChat() { const c = document.getElementById('chatMessages'); setTimeout(() => { c.scrollTop = c.scrollHeight; }, 50); }
+
+function clearChat() {
+  chatHistory = [{ role: 'system', content: SYSTEM_PROMPT }];
+  document.getElementById('chatMessages').innerHTML = '<div class="msg ai">Hey! I\'m Luna, your IELTS speaking coach. Let\'s practice together! Tell me about yourself — what do you do? What are your hobbies?</div>';
+  document.getElementById('materialArea').innerHTML = '';
+}
+
+// ============ 语音通话 ============
+let chatMode = 'text', recognition = null, isListening = false, isSpeaking = false, voiceActive = false, finalTranscript = '';
+
+function switchMode(mode) {
+  chatMode = mode;
+  document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.mode-btn').forEach(b => { if ((mode==='text' && b.textContent.includes('文本')) || (mode==='voice' && b.textContent.includes('语音'))) b.classList.add('active'); });
+  document.getElementById('textInputArea').style.display = mode === 'text' ? 'flex' : 'none';
+  document.getElementById('voiceInputArea').style.display = mode === 'voice' ? 'flex' : 'none';
+  document.getElementById('chatHeaderTitle').textContent = mode === 'voice' ? '雅思口语老师 Luna (语音通话中)' : '雅思口语老师 Luna (DeepSeek-V3)';
+  if (mode === 'text') { stopListening(); document.getElementById('chatInput').focus(); }
+  else if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) { showToast('你的浏览器不支持语音识别，请用 Chrome'); switchMode('text'); }
+}
+
+function toggleMic() {
+  if (!apiKey) { showToast('请先配置 DeepSeek API Key'); return; }
+  if (!voiceActive) startListening(); else stopListening();
+}
+
+function startListening() {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) { showToast('浏览器不支持语音识别'); return; }
+  if (isSpeaking) { showToast('Luna 正在说话，请等她说完'); return; }
+  recognition = new SR(); recognition.lang = 'en-US'; recognition.interimResults = true; recognition.continuous = true; recognition.maxAlternatives = 1;
+  recognition.onstart = () => { isListening = true; voiceActive = true; finalTranscript = ''; document.getElementById('micBtn').classList.add('listening'); document.getElementById('voiceStatus').textContent = '正在聆听...'; document.getElementById('interimText').textContent = ''; };
+  recognition.onresult = (event) => {
+    let interim = '';
+    for (let i = event.resultIndex; i < event.results.length; i++) {
+      if (event.results[i].isFinal) finalTranscript += event.results[i][0].transcript + ' ';
+      else interim += event.results[i][0].transcript;
+    }
+    document.getElementById('interimText').textContent = finalTranscript + interim;
+  };
+  recognition.onerror = (event) => {
+    if (event.error === 'no-speech') document.getElementById('voiceStatus').textContent = '没听到声音，再试一次';
+    else if (event.error !== 'aborted') { document.getElementById('voiceStatus').textContent = '识别出错: ' + event.error; showToast('语音识别错误: ' + event.error); }
+    stopListening();
+  };
+  recognition.onend = () => {
+    isListening = false; voiceActive = false; document.getElementById('micBtn').classList.remove('listening');
+    const text = finalTranscript.trim();
+    if (text && text.length > 2) { document.getElementById('voiceStatus').textContent = '识别完成，发送中...'; document.getElementById('interimText').textContent = ''; sendVoiceMessage(text); }
+    else if (text.length <= 2) document.getElementById('voiceStatus').textContent = '点击麦克风开始说话';
+  };
+  recognition.start();
+}
+
+function stopListening() {
+  voiceActive = false;
+  if (recognition) { try { recognition.stop(); } catch(e) {} recognition = null; }
+  isListening = false; document.getElementById('micBtn').classList.remove('listening');
+  document.getElementById('voiceStatus').textContent = '点击麦克风开始说话'; document.getElementById('interimText').textContent = '';
+}
+
+async function sendVoiceMessage(text) {
+  if (!apiKey) return;
+  addMessage('user', text); chatHistory.push({ role: 'user', content: text });
+  document.getElementById('voiceStatus').textContent = 'Luna 正在思考...'; scrollChat();
+  try {
+    const reply = await callDeepSeek(chatHistory, 400, 0.7);
+    chatHistory.push({ role: 'assistant', content: reply }); addMessage('ai', reply); scrollChat();
+    document.getElementById('voiceStatus').innerHTML = '<span class="voice-speak-indicator"><span class="wave-bars"><span></span><span></span><span></span></span>Luna 正在说话...</span>';
+    await speakText(reply);
+    if (chatMode === 'voice') document.getElementById('voiceStatus').textContent = '轮到你了，点击麦克风说话';
+  } catch(e) { document.getElementById('voiceStatus').textContent = '出错了: ' + e.message; }
+}
+
+function speakText(text) {
+  return new Promise((resolve) => {
+    if (!('speechSynthesis' in window)) { resolve(); return; }
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'en-US'; utterance.rate = 0.95; utterance.pitch = 1.05; utterance.volume = 1;
+    const voices = window.speechSynthesis.getVoices();
+    const engVoice = voices.find(v => v.lang.startsWith('en') && v.name.includes('Female')) || voices.find(v => v.lang.startsWith('en-US')) || voices.find(v => v.lang.startsWith('en'));
+    if (engVoice) utterance.voice = engVoice;
+    isSpeaking = true;
+    utterance.onend = () => { isSpeaking = false; resolve(); };
+    utterance.onerror = () => { isSpeaking = false; resolve(); };
+    window.speechSynthesis.speak(utterance);
+  });
+}
+if ('speechSynthesis' in window) { window.speechSynthesis.getVoices(); window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices(); }
+
+// ============ 雅思素材生成 ============
+async function generateMaterial() {
+  const userMessages = chatHistory.filter(m => m.role === 'user');
+  if (userMessages.length < 2) { showToast('先和 Luna 多聊几句吧~'); return; }
+  if (!apiKey) { showToast('请先配置 DeepSeek API Key'); return; }
+  const area = document.getElementById('materialArea');
+  area.innerHTML = '<div style="text-align:center;padding:16px;"><span class="spinner"></span> 正在分析你的故事...</div>';
+  const conversation = chatHistory.filter(m => m.role !== 'system').map(m => `${m.role === 'user' ? 'Student' : 'Luna'}: ${m.content}`).join('\n\n');
+  try {
+    const content = await callDeepSeek([{ role: 'user', content: `Based on this IELTS conversation, extract the student's stories and adapt each into versatile speaking素材 for multiple Part 2 topics. Format as JSON array: [{"title":"...","story":"...","topics":["..."],"vocab":[{"en":"...","zh":"..."}],"tip":"..."}]\n\n${conversation}` }], 2000, 0.6);
+    const match = content.match(/\[[\s\S]*\]/);
+    if (match) { renderMaterials(JSON.parse(match[0])); }
+    else { area.innerHTML = '<div class="material-card"><p>素材生成中，请稍等...</p><pre style="font-size:11px;white-space:pre-wrap;margin-top:8px;">' + content + '</pre></div>'; }
+  } catch(e) { area.innerHTML = '<div class="material-card" style="color:#C06080;">生成出错: ' + e.message + '</div>'; }
+}
+
+function renderMaterials(materials) {
+  let html = '<h4 style="margin-top:16px;color:var(--pink-deep);font-size:15px;">你的口语多话题素材卡</h4>';
+  materials.forEach((m, i) => {
+    html += `<div class="material-card"><button class="copy-btn" onclick="copyMaterial(${i})">复制</button><strong style="font-size:14px;color:var(--pink-deep);">${m.title}</strong><p style="margin:8px 0;font-size:13px;line-height:1.7;">${m.story}</p><div style="margin:8px 0;">${m.topics.map(t => '<span class="topic-tag">'+t+'</span>').join(' ')}</div><div style="font-size:12px;color:var(--pink-dark);margin-top:6px;"><strong>关键词汇：</strong>${m.vocab.map(v => v.en+' ('+v.zh+')').join(' · ')}</div><div style="font-size:11px;color:var(--muted);margin-top:4px;font-style:italic;">适配技巧：${m.tip}</div></div>`;
+  });
+  document.getElementById('materialArea').innerHTML = html;
+  window._materials = materials;
+  if (materials.length) {
+    const userMsgs = chatHistory.filter(m=>m.role==='user').map(m=>m.content).join('\n');
+    addToArchive({
+      module:'ielts', type:'口语素材',
+      title:materials[0].title+' 等'+materials.length+'个话题素材',
+      content:materials.map(m=>m.story).join(' ').slice(0,400),
+      userOutput: userMsgs.slice(0,800),
+      aiRefinement: materials.map(m=>'【'+m.title+'】\n'+m.story+'\n适用话题：'+m.topics.join('、')+'\n关键词汇：'+m.vocab.map(v=>v.en+'('+v.zh+')').join(' · ')).join('\n\n')
+    });
+  }
+}
+function copyMaterial(index) {
+  const m = window._materials[index];
+  navigator.clipboard.writeText(`【${m.title}】\n${m.story}\n\n适用话题: ${m.topics.join(', ')}\n关键词汇: ${m.vocab.map(v => v.en+'('+v.zh+')').join(', ')}`).then(() => showToast('已复制'));
+}
+
+// ============ 雅思写作外刊 ============
+async function searchArticle() {
+  const topic = document.getElementById('topicSelect').value;
+  const area = document.getElementById('articleArea');
+  const btn = document.getElementById('searchArticleBtn');
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> 检索中...';
+  area.innerHTML = '<div style="text-align:center;padding:24px;"><span class="spinner"></span> 正在从外刊中寻找优质文章...</div>';
+
+  if (!apiKey) {
+    // 没有 API Key 用模拟数据
+    const topicName = topic || 'technology';
+    renderArticle({
+      source: 'The Economist', title: topicName.charAt(0).toUpperCase()+topicName.slice(1)+': The Next Frontier',
+      sentences: [
+        { text: 'The rapid advancement of artificial intelligence has fundamentally altered the landscape of modern employment, rendering certain skills obsolete while creating unprecedented demand for others.', type: 'task2', analysis: '现在完成时 + while 对比结构。适合 Task 2 议论文开头。' },
+        { text: 'Between 2020 and 2025, the share of workers engaged in remote-capable roles surged from 24% to 42%, a shift that shows no sign of reversing.', type: 'task1', analysis: '时间区间 + surged from...to... 动态数据描述。Task 1 图表题必备。' },
+        { text: 'Rather than viewing automation as a threat, policymakers would do well to consider it an opportunity to redefine the social contract.', type: 'task2', analysis: 'Rather than...would do well to... 高级否定+建议结构。' }
+      ]
+    });
+    document.getElementById('writingTaskArea').style.display = 'block';
+    btn.disabled = false; btn.textContent = '检索今日外刊';
+    return;
+  }
+
+  try {
+    const content = await callDeepSeek([{ role: 'user', content: `Create an IELTS writing practice article (English, 200-300 words) about "${topic || 'current global affairs'}". Format as JSON: {"source":"source name","title":"article title","sentences":[{"text":"key sentence","type":"task1|task2","analysis":"Chinese writing tip"}]}. Include 4-6 sentences with IELTS Task 1 (data description) and Task 2 (opinion/discussion) labels. Analysis should be in Chinese.` }], 1500);
+    const match = content.match(/\{[\s\S]*\}/);
+    if (match) { renderArticle(JSON.parse(match[0])); document.getElementById('writingTaskArea').style.display = 'block'; }
+    else { area.innerHTML = '<div class="article-card"><p>文章生成完成：</p><pre style="white-space:pre-wrap;font-size:13px;">'+content+'</pre></div>'; }
+  } catch(e) { area.innerHTML = '<p style="color:#C06080;">检索出错: ' + e.message + '</p>'; }
+  btn.disabled = false; btn.textContent = '检索今日外刊';
+}
+
+function renderArticle(article) {
+  const area = document.getElementById('articleArea');
+  let html = `<div class="article-card"><h4>${article.source} · ${article.title}</h4><p style="font-size:12px;color:var(--muted);margin-bottom:10px;">今日精选 · 点击句子查看写作应用</p>`;
+  article.sentences.forEach(s => {
+    const saved = isSentenceSaved(s.text);
+    html += `<div style="display:flex;align-items:flex-start;gap:6px;"><div class="sentence" style="cursor:pointer;flex:1;" onclick="this.querySelector('.analysis').style.display=this.querySelector('.analysis').style.display==='none'?'block':'none'"><span class="task-label ${s.type}">Task ${s.type.slice(-1)}</span>"${s.text}"<div class="analysis" style="display:none;">${s.analysis}</div></div><button class="fav-btn ${saved?'faved':''}" onclick="event.stopPropagation();toggleSentenceFav('${s.text.replace(/'/g,"\\'")}','${s.type}','${s.analysis.replace(/'/g,"\\'")}',this)" style="margin-top:6px;">${saved?'已收藏':'收藏'}</button></div>`;
+  });
+  html += '</div>'; area.innerHTML = html; window._article = article;
+}
+
+async function generateTask1() {
+  if (!apiKey) { showToast('请先配置 DeepSeek API Key'); return; }
+  const taskResult = document.getElementById('taskResult');
+  taskResult.innerHTML = '<div style="text-align:center;padding:16px;"><span class="spinner"></span> 正在生成 Task 1 范文...</div>';
+  try {
+    const sentences = window._article.sentences.filter(s => s.type==='task1').map(s => s.text).join('\n');
+    const content = await callDeepSeek([{ role: 'user', content: `Write IELTS Task 1 essay (150+ words) using these sentence patterns:\n${sentences}\nCreate a realistic chart scenario. Band 7+. Highlight adapted patterns in 【】.` }], 600);
+    taskResult.innerHTML = `<div class="article-card" style="border-left-color:#C06080;"><h4>Task 1 范文</h4><pre style="white-space:pre-wrap;font-size:13px;line-height:1.7;font-family:inherit;">${content}</pre></div>`;
+  } catch(e) { taskResult.innerHTML = '<p style="color:#C06080;">生成出错: ' + e.message + '</p>'; }
+}
+
+async function generateTask2() {
+  if (!apiKey) { showToast('请先配置 DeepSeek API Key'); return; }
+  const taskResult = document.getElementById('taskResult');
+  taskResult.innerHTML = '<div style="text-align:center;padding:16px;"><span class="spinner"></span> 正在生成 Task 2 范文...</div>';
+  try {
+    const sentences = window._article.sentences.filter(s => s.type==='task2').map(s => s.text).join('\n');
+    const content = await callDeepSeek([{ role: 'user', content: `Write IELTS Task 2 essay (250+ words) using these patterns:\n${sentences}\nInclude intro, body paragraphs, conclusion. Band 7+. Highlight patterns in 【】.` }], 800);
+    taskResult.innerHTML = `<div class="article-card" style="border-left-color:#904060;"><h4>Task 2 范文</h4><pre style="white-space:pre-wrap;font-size:13px;line-height:1.7;font-family:inherit;">${content}</pre></div>`;
+  } catch(e) { taskResult.innerHTML = '<p style="color:#C06080;">生成出错: ' + e.message + '</p>'; }
+}
+
+// ============ 写作收藏系统 ============
+let savedSentences = JSON.parse(localStorage.getItem('ielts_saved_sentences') || '[]');
+let savedWords = JSON.parse(localStorage.getItem('ielts_saved_words') || '[]');
+let collectionTab = 'sentence';
+
+function saveCollections() { localStorage.setItem('ielts_saved_sentences', JSON.stringify(savedSentences)); localStorage.setItem('ielts_saved_words', JSON.stringify(savedWords)); updateCollectionCount(); }
+function isSentenceSaved(text) { return savedSentences.some(s => s.text === text); }
+function toggleSentenceFav(text, type, analysis, btn) {
+  const idx = savedSentences.findIndex(s => s.text === text);
+  if (idx >= 0) { savedSentences.splice(idx, 1); btn.classList.remove('faved'); btn.textContent = '收藏'; showToast('已取消收藏'); }
+  else { savedSentences.push({ text, type, analysis, date: new Date().toISOString().slice(0,10) }); btn.classList.add('faved'); btn.textContent = '已收藏'; showToast('已收藏句子'); addToArchive({ module:'writing', type:'句子收藏', title:'外刊句型 · Task '+type.slice(-1), content:text, userOutput:text, aiRefinement:analysis }); }
+  saveCollections(); renderCollections();
+}
+function addWord() {
+  const en = document.getElementById('wordEn').value.trim(); const zh = document.getElementById('wordZh').value.trim();
+  if (!en || !zh) { showToast('请填写英文和中文'); return; }
+  savedWords.push({ en, zh, date: new Date().toISOString().slice(0,10) });
+  document.getElementById('wordEn').value = ''; document.getElementById('wordZh').value = '';
+  saveCollections(); renderCollections(); showToast('单词已收藏');
+  addToArchive({ module:'writing', type:'单词收藏', title:'外刊词汇 · '+en, content:en+' — '+zh, userOutput:en+' — '+zh });
+}
+function removeSentence(index) { savedSentences.splice(index, 1); saveCollections(); renderCollections(); }
+function removeWord(index) { savedWords.splice(index, 1); saveCollections(); renderCollections(); }
+function toggleCollection() { const p = document.getElementById('collectionPanel'); p.style.display = p.style.display === 'none' ? 'block' : 'none'; if (p.style.display === 'block') renderCollections(); }
+function switchCollectionTab(tab) {
+  collectionTab = tab;
+  document.querySelectorAll('.collection-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.collection-tab').forEach(t => { if ((tab==='sentence' && t.textContent.includes('句子')) || (tab==='word' && t.textContent.includes('单词'))) t.classList.add('active'); });
+  document.getElementById('collectionSentenceTab').style.display = tab === 'sentence' ? 'block' : 'none';
+  document.getElementById('collectionWordTab').style.display = tab === 'word' ? 'block' : 'none';
+  renderCollections();
+}
+function renderCollections() { renderSentenceList(); renderWordList(); updateCollectionCount(); }
+function renderSentenceList() {
+  document.getElementById('sentenceTabCount').textContent = savedSentences.length;
+  const list = document.getElementById('sentenceList');
+  if (savedSentences.length === 0) { list.innerHTML = '<div class="empty-state" style="padding:24px;"><p style="font-size:12px;color:var(--muted);">还没有收藏句子</p></div>'; return; }
+  list.innerHTML = savedSentences.map((s,i) => `<div class="collection-item"><button class="delete-btn" onclick="removeSentence(${i})">×</button><div style="flex:1;"><span class="task-label ${s.type}">Task ${s.type.slice(-1)}</span> "${s.text}"<div class="item-meta">${s.analysis} · ${s.date}</div></div></div>`).join('');
+}
+function renderWordList() {
+  document.getElementById('wordTabCount').textContent = savedWords.length;
+  const list = document.getElementById('wordList');
+  if (savedWords.length === 0) { list.innerHTML = '<div class="empty-state" style="padding:24px;"><p style="font-size:12px;color:var(--muted);">还没有收藏单词</p></div>'; return; }
+  list.innerHTML = savedWords.map((w,i) => `<div class="collection-item" style="align-items:center;"><button class="delete-btn" onclick="removeWord(${i})">×</button><span style="font-weight:600;color:var(--pink-deep);min-width:100px;">${w.en}</span><span style="color:var(--muted);">${w.zh}</span><span style="margin-left:auto;font-size:11px;color:var(--muted);">${w.date}</span></div>`).join('');
+}
+function updateCollectionCount() { document.getElementById('collectionCount').textContent = savedSentences.length + savedWords.length; }
+function exportCollection(mode) {
+  const total = savedSentences.length + savedWords.length;
+  if (total === 0) { showToast('收藏夹是空的'); return; }
+  let text = '═══════════════════════════════\n  吉尼雅思写作收藏夹\n  导出时间：'+new Date().toLocaleString('zh-CN')+'\n  句子：'+savedSentences.length+' 条  |  单词：'+savedWords.length+' 个\n═══════════════════════════════\n\n';
+  if (savedSentences.length > 0) { text += '── 句子收藏 ──\n\n'; savedSentences.forEach((s,i) => { text += `【${i+1}】[Task ${s.type.slice(-1)}] "${s.text}"\n    分析：${s.analysis}\n    日期：${s.date}\n\n`; }); }
+  if (savedWords.length > 0) { text += '── 单词收藏 ──\n\n'; savedWords.forEach((w,i) => { text += `${i+1}. ${w.en} — ${w.zh}  (${w.date})\n`; }); }
+  if (mode === 'copy') { navigator.clipboard.writeText(text).then(() => showToast('已复制')); }
+  else { const blob = new Blob(['\uFEFF'+text], {type:'text/plain;charset=utf-8'}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `ielts_collection_${new Date().toISOString().slice(0,10)}.txt`; a.click(); URL.revokeObjectURL(a.href); showToast('TXT 已下载'); }
+}
+function clearCollection() {
+  if (savedSentences.length + savedWords.length === 0) { showToast('已经是空的'); return; }
+  if (confirm(`确定清空全部收藏吗？(句子 ${savedSentences.length} 条，单词 ${savedWords.length} 个)`)) { savedSentences = []; savedWords = []; saveCollections(); renderCollections(); showToast('已清空'); }
+}
+updateCollectionCount();
+
+// ============ 语言表达：自动推送文章 ============
+const expressionTopics = [
+  '人工智能与未来生活', '传统文化的现代价值', '职场成长与个人品牌', '环境保护与可持续发展',
+  '读书的意义与方法', '时间管理与自律', '科技伦理与人文关怀', '情绪管理与心理健康',
+  '跨文化交流', '创新与创业精神', '教育的本质', '城市与乡村生活的对比',
+  '社交媒体对我们生活的影响', '旅行的意义', '领导力与团队合作'
+];
+
+let expressionArticleLoaded = false;
+
+async function autoPushArticle() {
+  const area = document.getElementById('expressionArticleArea');
+  if (expressionArticleLoaded && window._expressionArticle) return; // 已加载过，不重复加载
+
+  if (!apiKey) {
+    area.innerHTML = `<div class="empty-state"><div class="icon">📖</div><p style="font-size:14px;font-weight:600;color:var(--lavender-dark);margin-bottom:4px;">需要配置 DeepSeek API Key</p><p style="font-size:12px;">配置后自动为你推送精选文章</p></div>`;
+    return;
+  }
+
+  area.innerHTML = '<div style="text-align:center;padding:24px;"><span class="spinner"></span> 正在为你精选一篇好文章...</div>';
+
+  const topic = expressionTopics[Math.floor(Math.random() * expressionTopics.length)];
+
+  try {
+    const content = await callDeepSeek([{ role: 'user', content: `请写一篇关于「${topic}」的中文短文（500-800字），要求：
+1. 语言优美流畅，适合作为语言表达训练材料
+2. 结构清晰，有明确的段落划分
+3. 内容有深度，能引发思考
+4. 包含一些精彩的四字词语和成语
+5. 标题简洁有力
+
+格式：先用单独一行写标题，然后正文。` }], 1500, 0.8);
+
+    window._expressionArticle = { title: topic, content: content };
+    expressionArticleLoaded = true;
+    displayExpressionArticle(topic, content);
+    document.getElementById('retellCard').style.display = 'block';
+  } catch(e) { area.innerHTML = '<div class="empty-state"><div class="icon">📖</div><p style="font-size:14px;color:var(--lavender-dark);">加载失败: ' + e.message + '</p><button class="btn btn-lavender btn-sm" onclick="refreshExpressionArticle()" style="margin-top:10px;">重试</button></div>'; }
+}
+
+async function refreshExpressionArticle() {
+  expressionArticleLoaded = false;
+  window._expressionArticle = null;
+  document.getElementById('retellResult').innerHTML = '';
+  document.getElementById('retellInput').value = '';
+  await autoPushArticle();
+}
+
+function displayExpressionArticle(topic, content) {
+  const area = document.getElementById('expressionArticleArea');
+  area.innerHTML = `<div class="article-card" style="border-left-color:var(--lavender);background:var(--lavender-light);">
+    <h4 style="color:var(--lavender-dark);">话题：${topic}</h4>
+    <div class="article-body">${content.split('\n').filter(l => l.trim()).map(l => {
+      if (l.startsWith('##')) return '<h4 style="color:var(--lavender-dark);margin-bottom:12px;">'+l.replace('## ','')+'</h4>';
+      if (l.startsWith('#')) return '<h3 style="color:var(--lavender-dark);margin-bottom:12px;">'+l.replace('# ','')+'</h3>';
+      return '<p>'+l+'</p>';
+    }).join('')}</div>
+  </div>`;
+  document.getElementById('retellCard').style.display = 'block';
+  document.getElementById('retellInput').value = '';
+  document.getElementById('retellResult').innerHTML = '';
+}
+
+// ============ 语言表达：语音复述 ============
+let retellRecognition = null, retellListening = false, retellFinal = '';
+
+function toggleRetellRecognition() {
+  if (retellListening) { stopRetellRecognition(); return; }
+  startRetellRecognition();
+}
+
+function startRetellRecognition() {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) { showToast('浏览器不支持语音识别，请使用 Chrome'); return; }
+  retellRecognition = new SR();
+  retellRecognition.lang = 'zh-CN';
+  retellRecognition.interimResults = true;
+  retellRecognition.continuous = true;
+  retellRecognition.maxAlternatives = 1;
+  retellRecognition.onstart = () => {
+    retellListening = true; retellFinal = '';
+    document.getElementById('retellRecordBtn').innerHTML = '🔴 正在录音...点击停止';
+    document.getElementById('retellRecordBtn').style.background = '#C06080';
+    document.getElementById('retellInterimText').style.display = 'block';
+    document.getElementById('retellInterimText').textContent = '';
+  };
+  retellRecognition.onresult = (event) => {
+    let interim = '';
+    for (let i = event.resultIndex; i < event.results.length; i++) {
+      if (event.results[i].isFinal) retellFinal += event.results[i][0].transcript;
+      else interim += event.results[i][0].transcript;
+    }
+    document.getElementById('retellInterimText').textContent = retellFinal + interim;
+  };
+  retellRecognition.onerror = (event) => {
+    if (event.error === 'no-speech') showToast('没听到声音，请再试');
+    else if (event.error !== 'aborted') showToast('识别错误: ' + event.error);
+    stopRetellRecognition();
+  };
+  retellRecognition.onend = () => {
+    retellListening = false;
+    document.getElementById('retellRecordBtn').innerHTML = '🎤 语音复述';
+    document.getElementById('retellRecordBtn').style.background = '';
+    if (retellFinal.trim()) {
+      const input = document.getElementById('retellInput');
+      input.value = (input.value + ' ' + retellFinal.trim()).trim();
+      showToast('语音已识别，已填入输入框');
+    }
+  };
+  retellRecognition.start();
+}
+
+function stopRetellRecognition() {
+  retellListening = false;
+  if (retellRecognition) { try { retellRecognition.stop(); } catch(e) {} retellRecognition = null; }
+  document.getElementById('retellRecordBtn').innerHTML = '🎤 语音复述';
+  document.getElementById('retellRecordBtn').style.background = '';
+}
+
+// ============ 语言表达：复述评估 ============
+async function evaluateRetelling() {
+  const retell = document.getElementById('retellInput').value.trim();
+  if (!retell) { showToast('请先输入或录制你的复述内容'); return; }
+  if (!window._expressionArticle) { showToast('请先搜索一篇文章'); return; }
+  if (!apiKey) { showToast('请先配置 DeepSeek API Key'); return; }
+
+  const result = document.getElementById('retellResult');
+  result.innerHTML = '<div style="text-align:center;padding:16px;"><span class="spinner"></span> 正在评估你的表达...</div>';
+
+  const articleText = window._expressionArticle.content.replace(/^#+ .+$/gm, '').trim();
+
+  try {
+    const content = await callDeepSeek([{ role: 'user', content: `你是语言表达训练教练。请评估以下复述的质量：
+
+原文概要：${articleText.slice(0, 1500)}
+
+学生复述：${retell}
+
+请从以下五个维度评分（每项满分20分，总分100分）：
+1. 内容完整性 — 是否覆盖了原文的核心信息和要点
+2. 语言流畅度 — 表达是否通顺自然
+3. 词汇丰富度 — 是否使用了丰富的词汇和成语
+4. 逻辑结构 — 组织是否清晰有条理
+5. 表达准确性 — 对原文的理解和转述是否准确
+
+请返回JSON格式：
+{
+  "total": 85,
+  "dimensions": [
+    {"name": "内容完整性", "score": 17, "comment": "..."},
+    {"name": "语言流畅度", "score": 18, "comment": "..."},
+    ...
+  ],
+  "overall": "总体评价，100字以内",
+  "highlights": ["亮点1", "亮点2"],
+  "suggestions": ["建议1", "建议2", "建议3"]
+}` }], 1000, 0.5);
+
+    const match = content.match(/\{[\s\S]*\}/);
+    if (match) {
+      const evalData = JSON.parse(match[0]);
+      window._lastRetellEval = evalData;
+      renderEvaluation(evalData, retell, articleText);
+    } else {
+      result.innerHTML = '<div class="score-card"><p>评估完成：</p><pre style="white-space:pre-wrap;font-size:13px;">'+content+'</pre></div>';
+    }
+  } catch(e) { result.innerHTML = '<p style="color:#C06080;">评估出错: ' + e.message + '</p>'; }
+}
+
+function renderEvaluation(data, userRetell, articleText) {
+  const getColor = (s) => s >= 16 ? '#80C8B8' : s >= 12 ? '#F0C878' : '#C06080';
+  let html = '<div class="score-card">';
+  html += '<div class="score-total"><div class="big">'+data.total+'</div><div style="font-size:13px;color:var(--muted);">总分 / 100</div></div>';
+  html += '<div class="score-grid">';
+  data.dimensions.forEach(d => {
+    html += `<div class="score-item"><div class="score-num" style="color:${getColor(d.score)}">${d.score}</div><div class="score-label">${d.name}</div><div style="font-size:10px;color:var(--muted);margin-top:4px;">${d.comment}</div></div>`;
+  });
+  html += '</div>';
+  html += '<div style="margin-top:12px;font-size:13px;line-height:1.7;color:var(--text);"><strong>总体评价：</strong>'+data.overall+'</div>';
+  if (data.highlights && data.highlights.length) {
+    html += '<div style="margin-top:10px;"><strong style="color:#80C8B8;font-size:12px;">亮点</strong><ul style="margin:4px 0 0 16px;font-size:12px;color:var(--text);">'+data.highlights.map(h => '<li>'+h+'</li>').join('')+'</ul></div>';
+  }
+  if (data.suggestions && data.suggestions.length) {
+    html += '<div style="margin-top:10px;"><strong style="color:var(--pink-dark);font-size:12px;">改进建议</strong><ul style="margin:4px 0 0 16px;font-size:12px;color:var(--text);">'+data.suggestions.map(s => '<li>'+s+'</li>').join('')+'</ul></div>';
+  }
+  html += '</div>';
+  document.getElementById('retellResult').innerHTML = html;
+  addToArchive({
+    module:'expression', type:'复述评估',
+    title:(window._expressionArticle?.title||'文章')+' · 复述练习',
+    content:data.overall, score:data.total,
+    userOutput: userRetell || '',
+    aiRefinement: '总体评价：'+data.overall+'\n\n各维度评分：\n'+data.dimensions.map(d=>'  '+d.name+'('+d.score+'分)：'+d.comment).join('\n')+'\n\n亮点：\n'+data.highlights.map(h=>'  ✓ '+h).join('\n')+'\n\n改进建议：\n'+data.suggestions.map(s=>'  → '+s).join('\n')
+  });
+}
+
+// ============ 每日名言 ============
+const quotesCollection = [
+  { text: '天行健，君子以自强不息。', source: '《周易》' },
+  { text: '学而不思则罔，思而不学则殆。', source: '《论语》' },
+  { text: '千里之行，始于足下。', source: '《道德经》' },
+  { text: '不积跬步，无以至千里；不积小流，无以成江海。', source: '《荀子》' },
+  { text: '业精于勤，荒于嬉；行成于思，毁于随。', source: '韩愈《进学解》' },
+  { text: '路漫漫其修远兮，吾将上下而求索。', source: '屈原《离骚》' },
+  { text: '书山有路勤为径，学海无涯苦作舟。', source: '韩愈' },
+  { text: '知之为知之，不知为不知，是知也。', source: '《论语》' },
+  { text: '博观而约取，厚积而薄发。', source: '苏轼' },
+  { text: '宝剑锋从磨砺出，梅花香自苦寒来。', source: '《警世贤文》' },
+  { text: '三人行，必有我师焉。', source: '《论语》' },
+  { text: '凡事预则立，不预则废。', source: '《礼记·中庸》' },
+  { text: '纸上得来终觉浅，绝知此事要躬行。', source: '陆游《冬夜读书示子聿》' },
+  { text: '问渠那得清如许，为有源头活水来。', source: '朱熹《观书有感》' },
+  { text: '人生在勤，不索何获。', source: '张衡' },
+  { text: '非淡泊无以明志，非宁静无以致远。', source: '诸葛亮《诫子书》' },
+  { text: '山重水复疑无路，柳暗花明又一村。', source: '陆游《游山西村》' },
+  { text: '长风破浪会有时，直挂云帆济沧海。', source: '李白《行路难》' },
+  { text: '会当凌绝顶，一览众山小。', source: '杜甫《望岳》' },
+  { text: '莫等闲，白了少年头，空悲切。', source: '岳飞《满江红》' }
+];
+
+function getDailyQuote() {
+  const today = new Date().toISOString().slice(0,10);
+  const stored = JSON.parse(localStorage.getItem('daily_quote') || '{}');
+  if (stored.date === today) return stored;
+  const idx = Math.floor(Math.random() * quotesCollection.length);
+  const quote = { date: today, ...quotesCollection[idx] };
+  localStorage.setItem('daily_quote', JSON.stringify(quote));
+  return quote;
+}
+
+async function refreshDailyQuote() {
+  if (apiKey) {
+    try {
+      const content = await callDeepSeek([{ role: 'user', content: '请推荐一句中国名言名句，适合激励学习和成长。返回JSON: {"text":"名言","source":"出处","insight":"简短解读（30字内）"}' }], 200, 0.9);
+      const match = content.match(/\{[\s\S]*\}/);
+      if (match) {
+        const today = new Date().toISOString().slice(0,10);
+        const quote = { date: today, ...JSON.parse(match[0]) };
+        localStorage.setItem('daily_quote', JSON.stringify(quote));
+        renderDailyQuote(quote);
+        return;
+      }
+    } catch(e) { /* fallback */ }
+  }
+  const idx = Math.floor(Math.random() * quotesCollection.length);
+  const today = new Date().toISOString().slice(0,10);
+  const quote = { date: today, ...quotesCollection[idx], insight: '' };
+  localStorage.setItem('daily_quote', JSON.stringify(quote));
+  renderDailyQuote(quote);
+}
+
+function renderDailyQuote(quote) {
+  document.getElementById('quoteDate').textContent = quote.date + ' · 每日一句';
+  document.getElementById('dailyQuote').innerHTML = `
+    <div class="quote-text">"${quote.text}"</div>
+    <div class="quote-source">—— ${quote.source}</div>
+    ${quote.insight ? '<div style="font-size:12px;color:var(--muted);margin-top:6px;">'+quote.insight+'</div>' : ''}
+  `;
+}
+
+// ============ 每日成语 ============
+const idiomsCollection = [
+  { word: '厚积薄发', meaning: '充分地积累，少量地释放。形容只有准备充分才能办好事情。', example: '他多年的学习和积累，终于在这次项目中厚积薄发，一鸣惊人。' },
+  { word: '持之以恒', meaning: '长久地坚持下去。形容有恒心，有毅力。', example: '学习语言需要持之以恒，每天坚持练习才能看到进步。' },
+  { word: '水滴石穿', meaning: '水不停地滴，石头也能被滴穿。比喻只要有恒心，不断努力，事情就一定能成功。', example: '水滴石穿，每天坚持背20个单词，一年后词汇量就能脱胎换骨。' },
+  { word: '未雨绸缪', meaning: '趁着天没下雨，先修缮房屋门窗。比喻事先做好准备工作。', example: '求职要未雨绸缪，大三就应该开始准备简历和实习了。' },
+  { word: '见微知著', meaning: '见到事情的苗头，就能知道它的实质和发展趋势。', example: '优秀的管理者能够见微知著，从细节中发现问题和机遇。' },
+  { word: '集腋成裘', meaning: '狐狸腋下的皮虽小，但聚集起来就能制成皮衣。比喻积少成多。', example: '每天写300字，集腋成裘，一个月就能写完一篇高质量的文章。' },
+  { word: '温故知新', meaning: '温习旧的知识，获得新的理解和体会。', example: '每周温故知新，把本科学过的知识重新梳理一遍，考研就有了基础。' },
+  { word: '举一反三', meaning: '从一件事情类推而知道其他许多事情。形容善于学习，能够触类旁通。', example: '学到一个表达方式，如果能举一反三把它用在5个话题里，口语素材就丰富多了。' },
+  { word: '锲而不舍', meaning: '一直刻下去不放手。比喻有恒心，有毅力。', example: '凭着锲而不舍的精神，她终于通过了雅思7分的分数线。' },
+  { word: '醍醐灌顶', meaning: '比喻听了高明的意见使人受到很大启发。', example: '老师的一番分析真是醍醐灌顶，让我对写作有了全新的理解。' },
+  { word: '融会贯通', meaning: '把各方面的知识和道理融合贯穿起来，得到全面透彻的理解。', example: '学语言不能死记硬背，要把听说读写融会贯通，才能真正掌握。' },
+  { word: '循序渐进', meaning: '按照一定的步骤逐渐深入或提高。', example: '减肥需要循序渐进，不能急于求成。学习也一样，按计划一步步来。' },
+  { word: '博采众长', meaning: '广泛采纳众人的长处及各方面的优点。', example: '写作文要博采众长，多读优秀范文，吸收不同的表达方式。' },
+  { word: '心无旁骛', meaning: '心思没有另外的追求，形容心思集中，专心致志。', example: '备考期间要心无旁骛，把社交媒体先放一放。' },
+  { word: '凿壁偷光', meaning: '形容家贫而读书刻苦。', example: '虽然现在不像古人那样凿壁偷光，但学习的热情和毅力一样重要。' },
+  { word: '卧薪尝胆', meaning: '形容刻苦自励，发愤图强。', example: '为了秋招拿到心仪的offer，我这几个月真是卧薪尝胆了。' },
+  { word: '画龙点睛', meaning: '比喻写文章或说话时，在关键处用几句话点明要旨。', example: '文章结尾的那句话真是画龙点睛，让整篇文章都立起来了。' },
+  { word: '开卷有益', meaning: '打开书本，总有益处。勉励人们勤奋好学。', example: '不管多忙，每天开卷有益，读10分钟也有收获。' },
+  { word: '饮水思源', meaning: '喝水的时候想起水是从哪儿来的。比喻不忘本。', example: '饮水思源，取得成绩后要记得感谢那些帮助过你的人。' },
+  { word: '精益求精', meaning: '已经很好了，还要求更好。', example: '对待每一次复述练习都要精益求精，不断提升自己的表达能力。' }
+];
+
+function getDailyIdiom() {
+  const today = new Date().toISOString().slice(0,10);
+  const stored = JSON.parse(localStorage.getItem('daily_idiom') || '{}');
+  if (stored.date === today) return stored;
+  const idx = Math.floor(Math.random() * idiomsCollection.length);
+  const idiom = { date: today, ...idiomsCollection[idx] };
+  localStorage.setItem('daily_idiom', JSON.stringify(idiom));
+  return idiom;
+}
+
+async function refreshDailyIdiom() {
+  if (apiKey) {
+    try {
+      const content = await callDeepSeek([{ role: 'user', content: '请推荐一个四字成语，适合学习成长场景。返回JSON: {"word":"成语","meaning":"释义（50字内）","example":"例句（30字内）"}' }], 200, 0.9);
+      const match = content.match(/\{[\s\S]*\}/);
+      if (match) {
+        const today = new Date().toISOString().slice(0,10);
+        const idiom = { date: today, ...JSON.parse(match[0]) };
+        localStorage.setItem('daily_idiom', JSON.stringify(idiom));
+        renderDailyIdiom(idiom);
+        return;
+      }
+    } catch(e) { /* fallback */ }
+  }
+  const idx = Math.floor(Math.random() * idiomsCollection.length);
+  const today = new Date().toISOString().slice(0,10);
+  const idiom = { date: today, ...idiomsCollection[idx] };
+  localStorage.setItem('daily_idiom', JSON.stringify(idiom));
+  renderDailyIdiom(idiom);
+}
+
+function renderDailyIdiom(idiom) {
+  document.getElementById('dailyIdiom').innerHTML = `
+    <div class="idiom-word">${idiom.word}</div>
+    <div class="idiom-meaning"><strong>释义：</strong>${idiom.meaning}</div>
+    <div class="idiom-example"><strong>例句：</strong>${idiom.example}</div>
+  `;
+}
+
+// 初始化每日积累
+(function initDaily() {
+  renderDailyQuote(getDailyQuote());
+  renderDailyIdiom(getDailyIdiom());
+})();
+
+// ============ TED 学习 ============
+const tedTalks = [
+  {
+    id: 'simon_sinek_how_great_leaders_inspire_action',
+    title: 'How Great Leaders Inspire Action',
+    speaker: 'Simon Sinek',
+    slug: 'simon_sinek_how_great_leaders_inspire_action',
+    topic: '领导力与激励'
+  },
+  {
+    id: 'brene_brown_on_vulnerability',
+    title: 'The Power of Vulnerability',
+    speaker: 'Brené Brown',
+    slug: 'brene_brown_on_vulnerability',
+    topic: '脆弱的力量'
+  },
+  {
+    id: 'amy_cuddy_your_body_language_may_shape_who_you_are',
+    title: 'Your Body Language May Shape Who You Are',
+    speaker: 'Amy Cuddy',
+    slug: 'amy_cuddy_your_body_language_may_shape_who_you_are',
+    topic: '肢体语言与自信'
+  },
+  {
+    id: 'sir_ken_robinson_do_schools_kill_creativity',
+    title: 'Do Schools Kill Creativity?',
+    speaker: 'Sir Ken Robinson',
+    slug: 'ken_robinson_says_schools_kill_creativity',
+    topic: '教育与创造力'
+  },
+  {
+    id: 'dan_gilbert_asks_why_are_we_happy',
+    title: 'The Surprising Science of Happiness',
+    speaker: 'Dan Gilbert',
+    slug: 'dan_gilbert_asks_why_are_we_happy',
+    topic: '幸福的科学'
+  },
+  {
+    id: 'jill_bolte_taylor_s_powerful_stroke_of_insight',
+    title: 'My Stroke of Insight',
+    speaker: 'Jill Bolte Taylor',
+    slug: 'jill_bolte_taylor_s_powerful_stroke_of_insight',
+    topic: '大脑科学'
+  },
+  {
+    id: 'angela_lee_duckworth_grit_the_power_of_passion_and_perseverance',
+    title: 'Grit: The Power of Passion and Perseverance',
+    speaker: 'Angela Lee Duckworth',
+    slug: 'angela_lee_duckworth_grit_the_power_of_passion_and_perseverance',
+    topic: '毅力与成功'
+  },
+  {
+    id: 'tim_urban_inside_the_mind_of_a_master_procrastinator',
+    title: 'Inside the Mind of a Master Procrastinator',
+    speaker: 'Tim Urban',
+    slug: 'tim_urban_inside_the_mind_of_a_master_procrastinator',
+    topic: '拖延症'
+  },
+  {
+    id: 'chris_anderson_teds_secret_to_great_public_speaking',
+    title: 'TED\'s Secret to Great Public Speaking',
+    speaker: 'Chris Anderson',
+    slug: 'chris_anderson_teds_secret_to_great_public_speaking',
+    topic: '演讲技巧'
+  },
+  {
+    id: 'susan_cain_the_power_of_introverts',
+    title: 'The Power of Introverts',
+    speaker: 'Susan Cain',
+    slug: 'susan_cain_the_power_of_introverts',
+    topic: '内向者的力量'
+  }
+];
+
+let tedLoaded = false;
+let currentTed = null;
+
+function loadTED() {
+  const talk = tedTalks[Math.floor(Math.random() * tedTalks.length)];
+  currentTed = talk;
+  tedLoaded = true;
+
+  // 更新标题和演讲者
+  document.getElementById('tedTitle').textContent = talk.title;
+  document.getElementById('tedSpeaker').textContent = talk.speaker + ' · ' + talk.topic;
+
+  // 设置音频海报
+  document.getElementById('tedAudioTitle').textContent = talk.title;
+  document.getElementById('tedAudioSpeaker').textContent = talk.speaker + ' · ' + talk.topic;
+  document.getElementById('tedAudioBtn').disabled = false;
+  document.getElementById('tedAudioBtn').textContent = '▶ 播放音频摘要';
+  document.getElementById('tedAudioStatus').textContent = '';
+  document.getElementById('tedWatchLink').href = 'https://www.ted.com/talks/' + talk.slug;
+
+  // 显示学习笔记区
+  document.getElementById('tedNotesCard').style.display = 'block';
+  document.getElementById('tedNotes').innerHTML = '<div style="text-align:center;padding:16px;"><span class="spinner"></span> AI 正在分析演讲内容...</div>';
+
+  // 显示复述区
+  document.getElementById('tedRetellCard').style.display = 'block';
+  document.getElementById('tedRetellInput').value = '';
+  document.getElementById('tedRetellResult').innerHTML = '';
+
+  // 用 DeepSeek 生成中英对照摘要和关键词汇
+  if (apiKey) {
+    generateTedSummary(talk);
+  } else {
+    document.getElementById('tedNotes').innerHTML = '<div class="empty-state"><p style="font-size:13px;color:var(--muted);">配置 DeepSeek API Key 后可自动生成学习笔记</p></div>';
+  }
+}
+
+async function refreshTED() {
+  tedLoaded = false;
+  currentTed = null;
+  document.getElementById('tedRetellResult').innerHTML = '';
+  document.getElementById('tedRetellInput').value = '';
+  loadTED();
+}
+
+async function generateTedSummary(talk) {
+  try {
+    const content = await callDeepSeek([{ role: 'user', content: `You are an English learning assistant. For the TED talk "${talk.title}" by ${talk.speaker}, provide:
+
+1. A brief Chinese summary (100字内)
+2. 5 key English expressions or quotes from this talk (with Chinese translation)
+3. 3 discussion questions based on the talk's theme
+
+Return as JSON:
+{
+  "summary_cn": "...",
+  "key_expressions": [{"en": "...", "zh": "...", "context": "..."}],
+  "discussion_questions": ["...", "...", "..."]
+}` }], 800, 0.6);
+
+    const match = content.match(/\{[\s\S]*\}/);
+    if (match) {
+      const data = JSON.parse(match[0]);
+      renderTedNotes(data);
+    } else {
+      document.getElementById('tedNotes').innerHTML = '<div class="article-card"><pre style="white-space:pre-wrap;font-size:13px;">'+content+'</pre></div>';
+    }
+  } catch(e) {
+    document.getElementById('tedNotes').innerHTML = '<div class="empty-state"><p style="font-size:13px;color:var(--muted);">笔记生成失败: ' + e.message + '</p></div>';
+  }
+}
+
+function renderTedNotes(data) {
+  let html = '';
+
+  // 中文摘要
+  html += `<div class="article-card" style="border-left-color:var(--teal);background:var(--teal-light);margin-bottom:10px;">
+    <h4 style="color:var(--teal-dark);">📝 演讲摘要</h4>
+    <p style="font-size:14px;line-height:1.8;color:var(--text);">${data.summary_cn}</p>
+  </div>`;
+
+  // 关键表达
+  html += `<div class="article-card" style="border-left-color:var(--pink);margin-bottom:10px;">
+    <h4 style="color:var(--pink-deep);">💬 关键表达（中英对照）</h4>`;
+  data.key_expressions.forEach((ke, i) => {
+    html += `<div style="padding:8px 0;border-bottom:1px solid var(--border);">
+      <div style="font-size:14px;font-weight:600;color:var(--pink-deep);font-style:italic;">"${ke.en}"</div>
+      <div style="font-size:13px;color:var(--muted);margin-top:3px;">${ke.zh}</div>
+      <div style="font-size:11px;color:var(--muted);margin-top:2px;">语境：${ke.context}</div>
+    </div>`;
+  });
+  html += '</div>';
+
+  // 讨论问题
+  html += `<div class="article-card" style="border-left-color:var(--lavender);background:var(--lavender-light);">
+    <h4 style="color:var(--lavender-dark);">🤔 思考与讨论</h4>`;
+  data.discussion_questions.forEach((q, i) => {
+    html += `<div style="padding:6px 0;font-size:13px;color:var(--text);">${i+1}. ${q}</div>`;
+  });
+  html += '</div>';
+
+  document.getElementById('tedNotes').innerHTML = html;
+  window._tedNotes = data;
+}
+
+// TED 音频播放
+let tedAudioUtterance = null;
+function playTedAudio() {
+  if (!window._tedNotes) { showToast('请先等待学习笔记生成'); return; }
+
+  const btn = document.getElementById('tedAudioBtn');
+  const status = document.getElementById('tedAudioStatus');
+
+  // 如果正在播放，则停止
+  if (tedAudioUtterance && window.speechSynthesis.speaking) {
+    window.speechSynthesis.cancel();
+    btn.innerHTML = '▶ 播放音频摘要';
+    btn.classList.remove('playing');
+    status.textContent = '';
+    tedAudioUtterance = null;
+    return;
+  }
+
+  const data = window._tedNotes;
+  // 构建朗读文本：演讲标题 + 关键表达
+  let text = `${currentTed.title} by ${currentTed.speaker}. `;
+  text += data.summary_cn + ' ';
+  text += 'Key expressions: ';
+  data.key_expressions.forEach(ke => { text += ke.en + '. '; });
+
+  tedAudioUtterance = new SpeechSynthesisUtterance(text);
+  tedAudioUtterance.lang = 'en-US';
+  tedAudioUtterance.rate = 0.9;
+  tedAudioUtterance.pitch = 1;
+
+  // 选英文女声
+  const voices = window.speechSynthesis.getVoices();
+  const enVoice = voices.find(v => v.lang.startsWith('en') && v.name.includes('Female'))
+    || voices.find(v => v.lang.startsWith('en-US'))
+    || voices.find(v => v.lang.startsWith('en'));
+  if (enVoice) tedAudioUtterance.voice = enVoice;
+
+  tedAudioUtterance.onstart = () => {
+    btn.innerHTML = '⏸ 暂停播放';
+    btn.classList.add('playing');
+    status.textContent = '🔊 正在朗读...';
+  };
+  tedAudioUtterance.onend = () => {
+    btn.innerHTML = '▶ 重播音频';
+    btn.classList.remove('playing');
+    status.textContent = '';
+    tedAudioUtterance = null;
+  };
+  tedAudioUtterance.onerror = () => {
+    btn.innerHTML = '▶ 播放音频摘要';
+    btn.classList.remove('playing');
+    status.textContent = '';
+    tedAudioUtterance = null;
+  };
+
+  window.speechSynthesis.speak(tedAudioUtterance);
+}
+
+async function evaluateTedRetell() {
+  const retell = document.getElementById('tedRetellInput').value.trim();
+  if (!retell) { showToast('请先写出你的观后复述'); return; }
+  if (!currentTed) { showToast('请先加载一个 TED 演讲'); return; }
+  if (!apiKey) { showToast('请先配置 DeepSeek API Key'); return; }
+
+  const result = document.getElementById('tedRetellResult');
+  result.innerHTML = '<div style="text-align:center;padding:16px;"><span class="spinner"></span> 正在评估你的复述...</div>';
+
+  try {
+    const content = await callDeepSeek([{ role: 'user', content: `你是 TED 学习教练。请评估以下观后复述的质量：
+
+演讲："${currentTed.title}" by ${currentTed.speaker}（主题：${currentTed.topic}）
+
+学生复述：${retell}
+
+请从以下维度评分（每项满分20分，总分100分）：
+1. 观点把握 — 是否准确理解了演讲的核心观点
+2. 思考深度 — 是否有自己的独立思考和见解
+3. 语言表达 — 表达是否清晰流畅有逻辑
+4. 结构组织 — 复述结构是否完整有条理
+5. 延伸能力 — 是否能联系实际或提出新角度
+
+返回JSON：
+{
+  "total": 85,
+  "dimensions": [
+    {"name": "观点把握", "score": 17, "comment": "..."},
+    {"name": "思考深度", "score": 18, "comment": "..."},
+    ...
+  ],
+  "overall": "总体评价，100字以内",
+  "highlights": ["亮点1", "亮点2"],
+  "suggestions": ["建议1", "建议2", "建议3"]
+}` }], 1000, 0.5);
+
+    const match = content.match(/\{[\s\S]*\}/);
+    if (match) {
+      const evalData = JSON.parse(match[0]);
+      window._lastTedEval = evalData;
+      renderTedEvaluation(evalData, retell);
+    } else {
+      result.innerHTML = '<div class="score-card"><pre style="white-space:pre-wrap;font-size:13px;">'+content+'</pre></div>';
+    }
+  } catch(e) { result.innerHTML = '<p style="color:#C06080;">评估出错: ' + e.message + '</p>'; }
+}
+
+function renderTedEvaluation(data, userRetell) {
+  const getColor = (s) => s >= 16 ? '#80C8B8' : s >= 12 ? '#F0C878' : '#C06080';
+  let html = '<div class="score-card">';
+  html += '<div class="score-total"><div class="big">'+data.total+'</div><div style="font-size:13px;color:var(--muted);">总分 / 100</div></div>';
+  html += '<div class="score-grid">';
+  data.dimensions.forEach(d => {
+    html += `<div class="score-item"><div class="score-num" style="color:${getColor(d.score)}">${d.score}</div><div class="score-label">${d.name}</div><div style="font-size:10px;color:var(--muted);margin-top:4px;">${d.comment}</div></div>`;
+  });
+  html += '</div>';
+  html += '<div style="margin-top:12px;font-size:13px;line-height:1.7;color:var(--text);"><strong>总体评价：</strong>'+data.overall+'</div>';
+  if (data.highlights && data.highlights.length) {
+    html += '<div style="margin-top:10px;"><strong style="color:#80C8B8;font-size:12px;">亮点</strong><ul style="margin:4px 0 0 16px;font-size:12px;color:var(--text);">'+data.highlights.map(h => '<li>'+h+'</li>').join('')+'</ul></div>';
+  }
+  if (data.suggestions && data.suggestions.length) {
+    html += '<div style="margin-top:10px;"><strong style="color:var(--pink-dark);font-size:12px;">改进建议</strong><ul style="margin:4px 0 0 16px;font-size:12px;color:var(--text);">'+data.suggestions.map(s => '<li>'+s+'</li>').join('')+'</ul></div>';
+  }
+  html += '</div>';
+  document.getElementById('tedRetellResult').innerHTML = html;
+  if (currentTed) addToArchive({
+    module:'ted', type:'观后复述',
+    title:currentTed.title+' · 观后复述',
+    content:data.overall, score:data.total,
+    userOutput: userRetell || '',
+    aiRefinement: '总体评价：'+data.overall+'\n\n各维度评分：\n'+data.dimensions.map(d=>'  '+d.name+'('+d.score+'分)：'+d.comment).join('\n')+'\n\n亮点：\n'+data.highlights.map(h=>'  ✓ '+h).join('\n')+'\n\n改进建议：\n'+data.suggestions.map(s=>'  → '+s).join('\n')
+  });
+}
+
+// ============ 秋招 ============
+function searchCampus() {
+  const company = document.getElementById('companyInput').value.trim();
+  if (!company) { showToast('请输入目标公司或行业'); return; }
+  document.getElementById('campusResult').innerHTML = '<div style="text-align:center;padding:24px;"><span class="spinner"></span> 搜索 '+company+' 2026 秋招信息中...<br><span style="font-size:11px;color:var(--muted);">在实际对话中我会用 WebSearch 实时检索</span></div>';
+}
+function optimizeResume() {
+  const resume = document.getElementById('resumeInput').value.trim();
+  const jd = document.getElementById('jdInput').value.trim();
+  if (!resume || !jd) { showToast('请同时粘贴简历和 JD'); return; }
+  document.getElementById('resumeResult').innerHTML = '<div style="text-align:center;padding:24px;"><span class="spinner"></span> 正在用 STAR 法则重写简历...</div>';
+}
+
+// ============ 工具函数 ============
+function showToast(msg) {
+  const toast = document.createElement('div');
+  toast.className = 'toast'; toast.textContent = msg;
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 2500);
+}
+
+// ============ 学习档案系统 ============
+function getArchive() {
+  try { return JSON.parse(localStorage.getItem('workbench_archive') || '[]'); }
+  catch(e) { return []; }
+}
+function saveArchive(items) { localStorage.setItem('workbench_archive', JSON.stringify(items)); }
+
+function addToArchive(item) {
+  const archive = getArchive();
+  archive.unshift({
+    id: Date.now() + '_' + Math.random().toString(36).slice(2,6),
+    date: new Date().toLocaleDateString('zh-CN'),
+    time: new Date().toLocaleTimeString('zh-CN', {hour:'2-digit',minute:'2-digit'}),
+    ...item
+  });
+  if (archive.length > 200) archive.length = 200;
+  saveArchive(archive);
+}
+
+function openArchive() {
+  document.getElementById('archiveOverlay').classList.remove('hidden');
+  document.querySelectorAll('.archive-filter').forEach(f => f.classList.remove('active'));
+  document.querySelector('[data-filter="all"]').classList.add('active');
+  document.getElementById('archiveSearch').value = '';
+  window._archiveFilter = 'all';
+  renderArchive();
+}
+
+function closeArchive() { document.getElementById('archiveOverlay').classList.add('hidden'); }
+
+function toggleArchiveDetail(id, btn) {
+  const section = document.getElementById(id);
+  if (!section) return;
+  const isOpen = section.classList.contains('expanded');
+  section.classList.toggle('expanded');
+  btn.textContent = isOpen ? btn.textContent.replace('收起','').replace('📝 ','📝 ') : btn.textContent.replace('📝 ','📝 收起 ');
+  if (btn.textContent.includes('收起')) btn.textContent = btn.textContent.replace('✨ ','✨ 收起 ');
+}
+
+function filterArchive(type, btn) {
+  document.querySelectorAll('.archive-filter').forEach(f => f.classList.remove('active'));
+  btn.classList.add('active');
+  window._archiveFilter = type;
+  renderArchive();
+}
+
+function renderArchive() {
+  const archive = getArchive();
+  const filter = window._archiveFilter || 'all';
+  const search = (document.getElementById('archiveSearch')?.value || '').toLowerCase();
+  const body = document.getElementById('archiveBody');
+  let filtered = archive;
+  if (filter !== 'all') filtered = filtered.filter(a => a.module === filter);
+  if (search) filtered = filtered.filter(a => (a.title + (a.content||'')).toLowerCase().includes(search));
+  if (!filtered.length) {
+    body.innerHTML = '<div class="archive-empty"><div class="icon">📭</div><p style="font-size:13px;font-weight:600;">还没有学习记录</p><p style="font-size:12px;">完成练习后会自动归档到这里</p></div>';
+    return;
+  }
+  const moduleTags = { ielts:'tag-ielts', expression:'tag-expression', ted:'tag-ted', writing:'tag-writing' };
+  const moduleNames = { ielts:'雅思', expression:'语言表达', ted:'TED', writing:'写作' };
+  body.innerHTML = filtered.map((a, idx) => `
+    <div class="archive-item">
+      <div class="meta">
+        <span class="tag ${moduleTags[a.module]||''}">${moduleNames[a.module]||a.module}</span>
+        ${a.type?'<span style="font-size:10px;color:var(--muted);">'+a.type+'</span>':''}
+        <span class="date">${a.date} ${a.time}</span>
+        ${a.score?'<span class="score-badge">'+a.score+'分</span>':''}
+        <button onclick="deleteArchiveItem('${a.id}')" style="margin-left:auto;background:none;border:none;cursor:pointer;font-size:14px;opacity:0.5;">🗑</button>
+      </div>
+      <div class="title">${a.title}</div>
+      <div class="preview">${(a.content||'').replace(/<[^>]*>/g,'').slice(0,120)}</div>
+      ${(a.userOutput || a.aiRefinement) ? `
+      <div style="display:flex;gap:12px;margin-top:4px;">
+        ${a.userOutput ? '<button class="expand-btn" onclick="toggleArchiveDetail(\''+a.id+'-user\',this)">📝 我的输出</button>' : ''}
+        ${a.aiRefinement ? '<button class="expand-btn" onclick="toggleArchiveDetail(\''+a.id+'-ai\',this)">✨ AI完善</button>' : ''}
+      </div>
+      <div id="${a.id}-user" class="detail-section user-output">
+        <div class="detail-label mine">📝 我的原始输出</div>
+        <div class="detail-text">${a.userOutput||''}</div>
+      </div>
+      <div id="${a.id}-ai" class="detail-section ai-refinement">
+        <div class="detail-label ai">✨ AI 在此基础上完善</div>
+        <div class="detail-text">${a.aiRefinement||''}</div>
+      </div>
+      ` : ''}
+    </div>`).join('');
+}
+
+function deleteArchiveItem(id) {
+  if (!confirm('确定删除这条记录？')) return;
+  saveArchive(getArchive().filter(a => a.id !== id));
+  renderArchive();
+}
+
+function exportArchive() {
+  const archive = getArchive();
+  if (!archive.length) { showToast('档案为空'); return; }
+  const filter = window._archiveFilter || 'all';
+  const filtered = filter==='all' ? archive : archive.filter(a => a.module===filter);
+  const modNames = { ielts:'雅思', expression:'语言表达', ted:'TED', writing:'写作' };
+  let text = '📁 吉尼学习档案\n'+'═'.repeat(30)+'\n导出: '+new Date().toLocaleDateString('zh-CN')+'\n\n', last='';
+  filtered.forEach((a,i) => {
+    if (a.module!==last) { text+='\n'+'─'.repeat(30)+'\n【'+modNames[a.module]+'】\n'+'─'.repeat(30)+'\n'; last=a.module; }
+    text+=`\n${i+1}. [${a.date}] ${a.title}${a.score?' ('+a.score+'分)':''}\n   评价：${(a.content||'').replace(/<[^>]*>/g,'').slice(0,200)}`;
+    if (a.userOutput) text+=`\n   📝 我的输出：\n      ${a.userOutput.replace(/\n/g,'\n      ').slice(0,300)}`;
+    if (a.aiRefinement) text+=`\n   ✨ AI完善：\n      ${a.aiRefinement.replace(/\n/g,'\n      ').slice(0,400)}`;
+    text+='\n';
+  });
+  const blob = new Blob([text],{type:'text/plain;charset=utf-8'});
+  const a = document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download='吉尼学习档案_'+new Date().toISOString().slice(0,10)+'.txt'; a.click();
+  URL.revokeObjectURL(a.href); showToast('档案已导出');
+}
+
+function clearArchive() {
+  if (!confirm('⚠️ 确定清空全部学习档案？不可撤销！')) return;
+  saveArchive([]); renderArchive(); showToast('档案已清空');
+}
+
+// ============ 心情日记 ============
+const DIARY_MOTTOS = [
+  '生活明朗，万物可爱', '今天也是闪闪发光的一天', '好事正酿，万物皆甜',
+  '你值得世间所有美好', '把日子过成诗', '心若向阳，无惧悲伤',
+  '每一天都是新的开始', '温柔且坚定，知足且上进', '追光的人，终会光芒万丈',
+  '种自己的花，爱自己的宇宙'
+];
+
+function getToday() { return new Date().toISOString().slice(0,10); }
+function getDiary() { try { return JSON.parse(localStorage.getItem('workbench_diary') || '{}'); } catch(e) { return {}; } }
+function saveDiaryData(data) { localStorage.setItem('workbench_diary', JSON.stringify(data)); }
+
+function getDateDisplay() {
+  const now = new Date();
+  const weekdays = ['日','一','二','三','四','五','六'];
+  return {
+    date: now.toLocaleDateString('zh-CN', {year:'numeric',month:'long',day:'numeric'}),
+    weekday: '星期' + weekdays[now.getDay()],
+    motto: DIARY_MOTTOS[now.getDate() % DIARY_MOTTOS.length],
+    today: getToday()
+  };
+}
+
+function initDiary() {
+  const d = getDateDisplay();
+  document.getElementById('diaryDate').textContent = d.date;
+  document.getElementById('diaryWeekday').textContent = d.weekday;
+  document.getElementById('diaryMotto').textContent = d.motto;
+
+  // 加载今日已有记录
+  const diary = getDiary();
+  const todayEntry = diary[d.today];
+  if (todayEntry) {
+    document.getElementById('diaryHappy').value = todayEntry.happy || '';
+    document.getElementById('diaryLove').value = todayEntry.love || '';
+    document.getElementById('diaryGrateful').value = todayEntry.grateful || '';
+    renderTodayEntries(todayEntry);
+  } else {
+    document.getElementById('diaryHappy').value = '';
+    document.getElementById('diaryLove').value = '';
+    document.getElementById('diaryGrateful').value = '';
+    document.getElementById('diaryTodayContent').innerHTML = '<p style="font-size:12px;color:var(--muted);text-align:center;padding:8px;">今天的幸福瞬间还等着你记录呢～</p>';
+    document.getElementById('diaryTodayCount').textContent = '';
+  }
+
+  updateStreak();
+  updateDiaryInspire();
+}
+
+function renderTodayEntries(entry) {
+  let html = '';
+  let count = 0;
+  if (entry.happy) { html += `<div class="diary-today-item happy"><span class="item-emoji">😊</span><div>${entry.happy}</div></div>`; count++; }
+  if (entry.love) { html += `<div class="diary-today-item" style="background:linear-gradient(135deg,#FFF5FA,#FFE8F0);border-color:#FFD0E0;"><span class="item-emoji">💕</span><div>${entry.love}</div></div>`; count++; }
+  if (entry.grateful) { html += `<div class="diary-today-item grateful"><span class="item-emoji">🙏</span><div>${entry.grateful}</div></div>`; count++; }
+  document.getElementById('diaryTodayContent').innerHTML = html || '<p style="font-size:12px;color:var(--muted);text-align:center;padding:8px;">今天的幸福瞬间还等着你记录呢～</p>';
+  document.getElementById('diaryTodayCount').textContent = count ? '('+count+'件好事)' : '';
+}
+
+function saveDiary() {
+  const happy = document.getElementById('diaryHappy').value.trim();
+  const love = document.getElementById('diaryLove').value.trim();
+  const grateful = document.getElementById('diaryGrateful').value.trim();
+
+  if (!happy && !love && !grateful) { showToast('至少写下一件好事吧～'); return; }
+
+  const diary = getDiary();
+  const today = getToday();
+  diary[today] = { happy, love, grateful, savedAt: new Date().toISOString() };
+  saveDiaryData(diary);
+  renderTodayEntries(diary[today]);
+  updateStreak();
+  updateDiaryInspire();
+  showToast('心情已保存！每一次记录都是给自己的礼物 🌸');
+  document.getElementById('diaryHistorySection').style.display = 'none';
+}
+
+function updateStreak() {
+  const diary = getDiary();
+  const keys = Object.keys(diary).sort().reverse();
+  let streak = 0;
+  let checkDate = new Date();
+  checkDate.setHours(0,0,0,0);
+
+  for (let i = 0; i < keys.length; i++) {
+    const expected = checkDate.toISOString().slice(0,10);
+    if (keys[i] === expected) {
+      streak++;
+      checkDate.setDate(checkDate.getDate() - 1);
+    } else if (i === 0 && keys[i] < expected) {
+      // 今天还没记录，检查昨天
+      const yesterday = new Date(); yesterday.setDate(yesterday.getDate()-1);
+      if (keys[i] === yesterday.toISOString().slice(0,10)) { streak++; checkDate.setDate(checkDate.getDate()-2); }
+      break;
+    } else { break; }
+  }
+  document.getElementById('diaryStreak').textContent = '🔥 连续 ' + streak + ' 天';
+}
+
+function loadDiary() {
+  const diary = getDiary();
+  const keys = Object.keys(diary).sort().reverse();
+  const section = document.getElementById('diaryHistorySection');
+  const content = document.getElementById('diaryHistoryContent');
+
+  if (!keys.length) {
+    content.innerHTML = '<div class="diary-empty"><div class="icon">📭</div><p style="font-size:12px;">还没有日记，从今天开始吧！</p></div>';
+  } else {
+    content.innerHTML = keys.map(k => {
+      const e = diary[k];
+      const date = new Date(k);
+      const weekday = ['日','一','二','三','四','五','六'][date.getDay()];
+      const summary = [e.happy, e.love, e.grateful].filter(Boolean).map(s => s.slice(0,25)+'…').join('｜');
+      return `<div class="diary-history-item" onclick="toggleHistoryItem(this)">
+        <div class="h-date">📅 ${k} 星期${weekday}</div>
+        <div class="h-summary">${summary || '(无内容)'}</div>
+        <div class="h-detail">
+          ${e.happy ? '<p>😊 <strong>开心：</strong>'+e.happy+'</p>' : ''}
+          ${e.love ? '<p>💕 <strong>幸福：</strong>'+e.love+'</p>' : ''}
+          ${e.grateful ? '<p>🙏 <strong>感恩：</strong>'+e.grateful+'</p>' : ''}
+        </div>
+      </div>`;
+    }).join('');
+  }
+  section.style.display = 'block';
+  section.scrollIntoView({ behavior: 'smooth' });
+}
+
+function hideHistory() { document.getElementById('diaryHistorySection').style.display = 'none'; }
+
+function toggleHistoryItem(el) {
+  const detail = el.querySelector('.h-detail');
+  detail.classList.toggle('expanded');
+}
+
+function updateDiaryInspire() {
+  const diary = getDiary();
+  const keys = Object.keys(diary);
+  const area = document.getElementById('diaryInspireArea');
+  if (keys.length === 0) {
+    area.innerHTML = '<div class="empty-state"><div class="icon">🌸</div><p style="font-size:13px;font-weight:600;color:var(--warm-dark);">记录的美好会加倍</p><p style="font-size:11px;">心理学研究表明，写下三件好事能显著提升幸福感 🌟</p></div>';
+  } else {
+    const today = getToday();
+    const todayEntry = diary[today];
+    let msg = '你已经坚持记录了 <b>' + keys.length + '</b> 天的心情日记！';
+    if (todayEntry) {
+      const count = [todayEntry.happy, todayEntry.love, todayEntry.grateful].filter(Boolean).length;
+      msg += '<br>今天记录了 <b>' + count + '</b> 件好事，真棒！🌈';
+    } else {
+      msg += '<br>今天还没记录，写一写让今天也闪闪发光吧 ✨';
+    }
+    area.innerHTML = '<div style="font-size:13px;line-height:1.8;color:var(--text);text-align:center;padding:12px;background:var(--warm-light);border-radius:12px;">'+msg+'</div>';
+  }
+}
+
+async function generateDiaryInspire() {
+  const diary = getDiary();
+  const keys = Object.keys(diary).sort().reverse();
+  const recent = keys.slice(0, 3).map(k => {
+    const e = diary[k];
+    return k + ': ' + [e.happy, e.love, e.grateful].filter(Boolean).join('; ');
+  }).join('\n');
+
+  if (!apiKey) {
+    const prompts = [
+      { emoji:'🌸', text:'今天你可以留意这三个小确幸：清晨的阳光、陌生人的微笑、一顿美味的饭菜。' },
+      { emoji:'🌿', text:'给自己一个拥抱吧——你已经做得很好了。每一天的努力都值得被看见。' },
+      { emoji:'☀️', text:'心理学家说，每晚写下三件好事，连续21天，幸福感会显著提升。试试看？' },
+      { emoji:'💫', text:'感恩是最容易也最强大的幸福练习。感谢今天的空气、食物和每一个遇见。' },
+      { emoji:'🍀', text:'幸福不在于拥有多少，而在于你看见了多少美好。现在环顾四周，找一件让你微笑的事物。' }
+    ];
+    const p = prompts[new Date().getDate() % prompts.length];
+    document.getElementById('diaryInspireArea').innerHTML = '<div style="font-size:13px;line-height:1.8;color:var(--text);text-align:center;padding:14px;background:var(--warm-light);border-radius:12px;"><div style="font-size:28px;margin-bottom:6px;">'+p.emoji+'</div>'+p.text+'</div>';
+    return;
+  }
+
+  document.getElementById('diaryInspireArea').innerHTML = '<div style="text-align:center;padding:16px;"><span class="spinner"></span> 正在为你生成专属正能量...</div>';
+  try {
+    const content = await callDeepSeek([{ role: 'user', content: `你是一位温暖治愈的积极心理学教练。请根据用户近期的日记内容，写一段150字以内的个性化鼓励和正能量提醒。要有具体细节，不要空洞鸡汤。风格温暖但不油腻。
+
+近期日记：
+${recent || '(用户刚开始记录)'}
+
+请直接输出鼓励文字，无需格式标记。` }], 300, 0.9);
+
+    document.getElementById('diaryInspireArea').innerHTML = '<div style="font-size:13px;line-height:1.8;color:var(--text);text-align:center;padding:14px;background:var(--warm-light);border-radius:12px;"><div style="font-size:28px;margin-bottom:6px;">🌸</div>'+content+'</div>';
+  } catch(e) {
+    document.getElementById('diaryInspireArea').innerHTML = '<div style="font-size:13px;line-height:1.8;color:var(--text);text-align:center;padding:14px;background:var(--warm-light);border-radius:12px;"><div style="font-size:28px;">🌸</div>每一天都值得被温柔对待，今天也是充满可能性的一天。</div>';
+  }
+}
+
+// 初始化日记面板
+initDiary();
+</script>
+
+<!-- ===== 学习档案弹窗 ===== -->
+<div class="archive-overlay hidden" id="archiveOverlay" onclick="if(event.target===this)closeArchive()">
+  <div class="archive-modal">
+    <div class="archive-header">
+      <h2>📁 学习档案</h2>
+      <button class="archive-close" onclick="closeArchive()">✕</button>
+    </div>
+    <div class="archive-filters">
+      <button class="archive-filter active" data-filter="all" onclick="filterArchive('all',this)">全部</button>
+      <button class="archive-filter" data-filter="ielts" onclick="filterArchive('ielts',this)">雅思</button>
+      <button class="archive-filter" data-filter="expression" onclick="filterArchive('expression',this)">语言表达</button>
+      <button class="archive-filter" data-filter="ted" onclick="filterArchive('ted',this)">TED</button>
+      <button class="archive-filter" data-filter="writing" onclick="filterArchive('writing',this)">写作</button>
+      <input type="text" id="archiveSearch" placeholder="🔍 搜索..." style="margin-left:auto;padding:5px 12px;border:1px solid var(--border);border-radius:15px;font-size:12px;outline:none;width:140px;font-family:inherit;" oninput="renderArchive()">
+    </div>
+    <div class="archive-body" id="archiveBody"></div>
+    <div class="archive-actions">
+      <button class="btn btn-pink btn-sm" onclick="exportArchive()">📥 导出全部</button>
+      <button class="btn btn-outline btn-sm" onclick="clearArchive()" style="color:#C06080;border-color:#C06080;">清空档案</button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
